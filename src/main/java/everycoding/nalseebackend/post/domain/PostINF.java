@@ -27,7 +27,6 @@ public class PostINF extends BaseEntity {
     private Gender gender;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
     private Post post;
 
 

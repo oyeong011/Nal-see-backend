@@ -15,6 +15,5 @@ public class ProductINF {
     private String productName;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
     private Post post;
 }

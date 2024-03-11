@@ -42,7 +42,7 @@ public class User extends BaseEntity {
     @ElementCollection
     private List<String> commentLikeList;
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(fetch = FetchType.LAZY)
     private UserINF userINF;
 
     @OneToMany(mappedBy = "user")

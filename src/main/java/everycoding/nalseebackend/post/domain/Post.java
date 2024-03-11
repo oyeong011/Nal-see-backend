@@ -24,19 +24,18 @@ public class Post extends BaseEntity {
     private Integer likeCNT;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToOne(mappedBy = "post")
+    @OneToOne(fetch = FetchType.LAZY)
     private Weather weather;
 
     @OneToMany(mappedBy = "post")
     private List<Comment> comments;
 
-    @OneToOne(mappedBy = "post")
+    @OneToOne(fetch = FetchType.LAZY)
     private PostINF postINF;
 
-    @OneToOne(mappedBy = "post")
+    @OneToOne(fetch = FetchType.LAZY)
     private ProductINF productINF;
 
 }

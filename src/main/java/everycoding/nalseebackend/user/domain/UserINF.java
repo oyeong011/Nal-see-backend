@@ -22,6 +22,5 @@ public class UserINF extends BaseEntity {
     private Gender gender;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
     private User user;
 }
