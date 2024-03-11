@@ -5,7 +5,6 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import everycoding.nalseebackend.api.exception.BaseException;
 import everycoding.nalseebackend.post.domain.Post;
-import everycoding.nalseebackend.post.domain.PostINF;
 import everycoding.nalseebackend.post.dto.PostRequestDto;
 import everycoding.nalseebackend.post.dto.PostResponseDto;
 import everycoding.nalseebackend.user.UserRepository;
@@ -50,7 +49,7 @@ public class PostServiceImpl implements PostService{
                 .stream()
                 .map(post -> PostResponseDto.builder()
                         .id(post.getId())
-                        .pictureList(post.getPicture_list())
+                        .pictureList(post.getPictureList())
                         .likeCnt(post.getLikeCNT())
                         .userId(post.getUser().getId())
                         .picture(post.getUser().getPicture())
@@ -77,7 +76,10 @@ public class PostServiceImpl implements PostService{
 
         List<String> photos = uploadS3(files);
 
-        PostINF postINF = PostINF.builder()
+        postRepository.save(Post.builder()
+                .pictureList(photos)
+                .content(postRequestDto.getContent())
+                .user(user)
                 .longitude(postRequestDto.getLongitude())
                 .latitude(postRequestDto.getLatitude())
                 .height(postRequestDto.getHeight())
@@ -86,13 +88,6 @@ public class PostServiceImpl implements PostService{
                 .constitution(postRequestDto.getConstitution())
                 .style(FashionStyle.valueOf(postRequestDto.getStyle()))
                 .gender(Gender.valueOf(postRequestDto.getGender()))
-                .build();
-
-        postRepository.save(Post.builder()
-                .picture_list(photos)
-                .content(postRequestDto.getContent())
-                .user(user)
-                .postINF(postINF)
                 .build());
     }
 

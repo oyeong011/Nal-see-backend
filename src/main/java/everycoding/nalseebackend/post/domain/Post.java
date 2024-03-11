@@ -2,6 +2,8 @@ package everycoding.nalseebackend.post.domain;
 
 import everycoding.nalseebackend.BaseEntity;
 import everycoding.nalseebackend.comment.domain.Comment;
+import everycoding.nalseebackend.user.domain.FashionStyle;
+import everycoding.nalseebackend.user.domain.Gender;
 import everycoding.nalseebackend.user.domain.User;
 import everycoding.nalseebackend.weather.domain.Weather;
 import jakarta.persistence.*;
@@ -9,6 +11,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -22,7 +25,7 @@ public class Post extends BaseEntity {
     private Long id;
 
     @ElementCollection
-    private List<String> picture_list;
+    private List<String> pictureList;
 
     private Long content;
 
@@ -37,19 +40,39 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post")
     private List<Comment> comments;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    private PostINF postINF;
+    private Double longitude;
+    private Double latitude;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    private ProductINF productINF;
+    private Integer height;
+    private Integer weight;
+    private String bodyShape;
+    private String constitution;
+
+    @Enumerated(EnumType.STRING)
+    private FashionStyle style;
+
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+
+    private String link;
+    private String brand;
+    private String productName;
 
     @Builder
-    public Post(List<String> picture_list, Long content, User user, Weather weather, PostINF postINF, List<ProductINF> productINF) {
-        this.picture_list = picture_list;
+    public Post(List<String> pictureList, Long content, User user, Weather weather, Double longitude, Double latitude, Integer height, Integer weight, String bodyShape, String constitution, FashionStyle style, Gender gender) {
+        this.pictureList = pictureList;
         this.content = content;
+        this.likeCNT = 0;
         this.user = user;
         this.weather = weather;
-        this.postINF = postINF;
-        this.productINF = productINF;
+        this.comments = new ArrayList<>();
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.height = height;
+        this.weight = weight;
+        this.bodyShape = bodyShape;
+        this.constitution = constitution;
+        this.style = style;
+        this.gender = gender;
     }
 }
