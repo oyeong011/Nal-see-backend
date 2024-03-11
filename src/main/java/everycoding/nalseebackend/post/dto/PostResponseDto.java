@@ -1,6 +1,5 @@
 package everycoding.nalseebackend.post.dto;
 
-import everycoding.nalseebackend.comment.domain.Comment;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

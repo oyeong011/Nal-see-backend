@@ -27,7 +27,7 @@ public class Post extends BaseEntity {
     @ElementCollection
     private List<String> pictureList;
 
-    private Long content;
+    private String content;
 
     private Integer likeCNT;
 
@@ -59,13 +59,13 @@ public class Post extends BaseEntity {
     private String productName;
 
     @Builder
-    public Post(List<String> pictureList, Long content, User user, Weather weather, Double longitude, Double latitude, Integer height, Integer weight, String bodyShape, String constitution, FashionStyle style, Gender gender) {
+    public Post(List<String> pictureList, String content, User user, Weather weather, Double longitude, Double latitude, Integer height, Integer weight, String bodyShape, String constitution, FashionStyle style, Gender gender) {
         this.pictureList = pictureList;
         this.content = content;
-        this.likeCNT = 0;
+        likeCNT = 0;
         this.user = user;
         this.weather = weather;
-        this.comments = new ArrayList<>();
+        comments = new ArrayList<>();
         this.longitude = longitude;
         this.latitude = latitude;
         this.height = height;

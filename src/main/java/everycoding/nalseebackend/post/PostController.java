@@ -21,7 +21,7 @@ public class PostController {
 
     // 기본 조회
     @GetMapping("/api/posts")
-    public ApiResponse<List<PostResponseDto>> getPosts(@RequestParam int lastPostId, @RequestParam int size) {
+    public ApiResponse<List<PostResponseDto>> getPosts(@RequestParam Long lastPostId, @RequestParam int size) {
         return ApiResponse.ok(postService.getPosts(lastPostId, size));
     }
 

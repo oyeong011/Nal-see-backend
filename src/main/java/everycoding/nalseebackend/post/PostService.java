@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface PostService {
 
-    List<PostResponseDto> getPosts(int lastPostId, int size);
+    List<PostResponseDto> getPosts(Long lastPostId, int size);
 
     List<PostResponseDto> getPostsInLocation(double bottomLeftLat, double bottomLeftLong,
                                              double topRightLat, double topRightLong);

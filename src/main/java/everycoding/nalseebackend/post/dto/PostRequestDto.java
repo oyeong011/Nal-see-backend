@@ -7,8 +7,7 @@ public class PostRequestDto {
 
     private Long userId;
 
-    private Long content;
-    private int likeCNT;
+    private String content;
 
     private Double latitude;
     private Double longitude;

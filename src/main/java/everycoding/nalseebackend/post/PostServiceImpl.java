@@ -1,9 +1,6 @@
 package everycoding.nalseebackend.post;
 
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import everycoding.nalseebackend.api.exception.BaseException;
+import everycoding.nalseebackend.aws.S3Service;
 import everycoding.nalseebackend.post.domain.Post;
 import everycoding.nalseebackend.post.dto.PostRequestDto;
 import everycoding.nalseebackend.post.dto.PostResponseDto;
@@ -22,13 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -38,14 +30,12 @@ public class PostServiceImpl implements PostService{
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-    private final AmazonS3 amazonS3;
-
-    private final String bucket = "nalsee-post-photos";
+    private final S3Service s3Service;
 
     @Override
-    public List<PostResponseDto> getPosts(int lastPostId, int size) {
-        Pageable pageable = PageRequest.of(lastPostId, size, Sort.by("id").descending());
-        return postRepository.findAll(pageable)
+    public List<PostResponseDto> getPosts(Long lastPostId, int size) {
+        Pageable pageable = PageRequest.of(0, size, Sort.by("id").descending());
+        return postRepository.findByIdLessThan(lastPostId, pageable)
                 .stream()
                 .map(post -> PostResponseDto.builder()
                         .id(post.getId())
@@ -88,21 +78,23 @@ public class PostServiceImpl implements PostService{
 
         User user = userRepository.findById(postRequestDto.getUserId()).orElseThrow(() -> new EntityNotFoundException("없는 유저입니다."));
 
-        List<String> photos = uploadS3(files);
+        List<String> photos = s3Service.uploadS3(files);
 
-        postRepository.save(Post.builder()
-                .pictureList(photos)
-                .content(postRequestDto.getContent())
-                .user(user)
-                .longitude(postRequestDto.getLongitude())
-                .latitude(postRequestDto.getLatitude())
-                .height(postRequestDto.getHeight())
-                .weight(postRequestDto.getWeight())
-                .bodyShape(postRequestDto.getBodyShape())
-                .constitution(postRequestDto.getConstitution())
-                .style(FashionStyle.valueOf(postRequestDto.getStyle()))
-                .gender(Gender.valueOf(postRequestDto.getGender()))
-                .build());
+        postRepository.save(
+                Post.builder()
+                        .pictureList(photos)
+                        .content(postRequestDto.getContent())
+                        .user(user)
+                        .latitude(postRequestDto.getLatitude())
+                        .longitude(postRequestDto.getLongitude())
+                        .height(postRequestDto.getHeight())
+                        .weight(postRequestDto.getWeight())
+                        .bodyShape(postRequestDto.getBodyShape())
+                        .constitution(postRequestDto.getConstitution())
+                        .style(FashionStyle.valueOf(postRequestDto.getStyle()))
+                        .gender(Gender.valueOf(postRequestDto.getGender()))
+                        .build()
+        );
     }
 
     @Override
@@ -110,41 +102,5 @@ public class PostServiceImpl implements PostService{
 
     }
 
-    private List<String> uploadS3(List<MultipartFile> files) throws IOException {
-        List<String> photos = new ArrayList<>();
-        for (MultipartFile multipartFile : files) {
-            File file = convertMultipartFileToFile(multipartFile)
-                    .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> file convert fail"));
 
-            String key = "post-photos/" + UUID.randomUUID();
-
-            try {
-                amazonS3.putObject(new PutObjectRequest(bucket, key, file)
-                        .withCannedAcl(CannedAccessControlList.PublicRead));
-            } catch (Exception e) {
-                throw new BaseException("사진 업로드 실패");
-            } finally {
-                file.delete();
-            }
-
-            photos.add(getS3(key));
-        }
-        return photos;
-    }
-
-    private String getS3(String key) {
-        return amazonS3.getUrl(bucket, key).toString();
-    }
-
-    public Optional<File> convertMultipartFileToFile(MultipartFile multipartFile) throws IOException {
-        File file = new File(System.getProperty("user.dir") + "/" + multipartFile.getOriginalFilename());
-
-        if (file.createNewFile()) {
-            try (FileOutputStream fos = new FileOutputStream(file)){
-                fos.write(multipartFile.getBytes());
-            }
-            return Optional.of(file);
-        }
-        return Optional.empty();
-    }
 }
