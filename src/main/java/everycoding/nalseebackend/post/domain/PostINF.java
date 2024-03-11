@@ -4,9 +4,12 @@ import everycoding.nalseebackend.BaseEntity;
 import everycoding.nalseebackend.user.domain.FashionStyle;
 import everycoding.nalseebackend.user.domain.Gender;
 import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "postINF")
+@NoArgsConstructor
 public class PostINF extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,5 +32,15 @@ public class PostINF extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY)
     private Post post;
 
-
+    @Builder
+    public PostINF(Double longitude, Double latitude, Integer height, Integer weight, String bodyShape, String constitution, FashionStyle style, Gender gender) {
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.height = height;
+        this.weight = weight;
+        this.bodyShape = bodyShape;
+        this.constitution = constitution;
+        this.style = style;
+        this.gender = gender;
+    }
 }

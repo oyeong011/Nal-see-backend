@@ -3,8 +3,10 @@ package everycoding.nalseebackend.post;
 import everycoding.nalseebackend.api.ApiResponse;
 import everycoding.nalseebackend.post.dto.PostResponseDto;
 import everycoding.nalseebackend.post.dto.PostRequestDto;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,8 +20,8 @@ public class PostController {
 
     // 기본 조회
     @GetMapping("/api/posts")
-    public ApiResponse<List<PostResponseDto>> getPosts() {
-        return ApiResponse.ok(postService.getPosts());
+    public ApiResponse<List<PostResponseDto>> getPosts(@RequestParam int lastPostId, @RequestParam int size) {
+        return ApiResponse.ok(postService.getPosts(lastPostId, size));
     }
 
     // 지도 기준 조회
@@ -35,9 +37,9 @@ public class PostController {
     }
 
     // 게시물 등록
-    @PostMapping("/api/posts")
-    public ApiResponse<Void> post(PostRequestDto requestDto) {
-        postService.post(requestDto);
+    @PostMapping(value = "/api/posts", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ApiResponse<Void> post(@RequestPart PostRequestDto requestDto, HttpServletRequest request) {
+        postService.post(requestDto, request);
         return ApiResponse.ok();
     }
 
