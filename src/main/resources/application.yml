@@ -1,8 +1,6 @@
 spring:
   profiles:
     active: dev
-  config:
-    import: application-secret.yml
   datasource:
     url: jdbc:mariadb://localhost:3306/nalsee
     username: ${spring.datasource.username}
@@ -35,14 +33,14 @@ cloud:
 spring:
   config:
     activate:
+      on-profile: dev
+    import: application-secret.yml
+
+---
+spring:
+  config:
+    activate:
       on-profile: prod
-  datasource:
-    url: ${MYSQL_URL}
-    username: ${MYSQL_USERNAME}
-    password: ${MYSQL_PASSWORD}
-cloud:
-  aws:
-    credentials:
-      access-key: ${AWS_ACCESS_KEY}
-      secret-key: ${AWS_SECRET_KEY}
+    import: application-prod.yml
+
 ---
