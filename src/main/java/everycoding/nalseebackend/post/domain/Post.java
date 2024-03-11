@@ -33,10 +33,10 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post")
     private List<Comment> comments;
 
-    @OneToMany(mappedBy = "post")
-    private List<PostINF> postINF;
+    @OneToOne(mappedBy = "post")
+    private PostINF postINF;
 
-    @OneToMany(mappedBy = "post")
-    private List<ProductINF> productINF;
+    @OneToOne(mappedBy = "post")
+    private ProductINF productINF;
 
 }
