@@ -27,8 +27,10 @@ public class PostController {
 
     // 지도 기준 조회
     @GetMapping("/api/posts/location")
-    public ApiResponse<List<PostResponseDto>> getPostsInLocation(@RequestParam double latitude, @RequestParam double longitude) {
-        return ApiResponse.ok(postService.getPostsInLocation(latitude, longitude));
+    public ApiResponse<List<PostResponseDto>> getPostsInLocation(
+            @RequestParam double bottomLeftLat, @RequestParam double bottomLeftLong,
+            @RequestParam double topRightLat, @RequestParam double topRightLong) {
+        return ApiResponse.ok(postService.getPostsInLocation(bottomLeftLat, bottomLeftLong, topRightLat, topRightLong));
     }
 
     // 검색

@@ -58,8 +58,22 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public List<PostResponseDto> getPostsInLocation(double latitude, double longitude) {
-        return null;
+    public List<PostResponseDto> getPostsInLocation(
+            double bottomLeftLat, double bottomLeftLong,
+            double topRightLat, double topRightLong
+    ) {
+        List<Post> posts = postRepository.findByLocationWithin(bottomLeftLat, bottomLeftLong, topRightLat, topRightLong);
+
+        return posts.stream()
+                .map(post -> PostResponseDto.builder()
+                        .id(post.getId())
+                        .pictureList(post.getPictureList())
+                        .likeCnt(post.getLikeCNT())
+                        .userId(post.getUser().getId())
+                        .username(post.getUser().getUsername())
+                        .picture(post.getUser().getPicture())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     @Override
