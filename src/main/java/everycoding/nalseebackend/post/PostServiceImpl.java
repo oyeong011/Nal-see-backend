@@ -1,5 +1,6 @@
 package everycoding.nalseebackend.post;
 
+import everycoding.nalseebackend.api.exception.BaseException;
 import everycoding.nalseebackend.aws.S3Service;
 import everycoding.nalseebackend.post.domain.Post;
 import everycoding.nalseebackend.post.dto.PostRequestDto;
@@ -8,7 +9,6 @@ import everycoding.nalseebackend.user.UserRepository;
 import everycoding.nalseebackend.user.domain.FashionStyle;
 import everycoding.nalseebackend.user.domain.Gender;
 import everycoding.nalseebackend.user.domain.User;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -76,7 +76,7 @@ public class PostServiceImpl implements PostService{
         MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest) request;
         List<MultipartFile> files = multipartHttpServletRequest.getFiles("photos");
 
-        User user = userRepository.findById(postRequestDto.getUserId()).orElseThrow(() -> new EntityNotFoundException("없는 유저입니다."));
+        User user = userRepository.findById(postRequestDto.getUserId()).orElseThrow(() -> new BaseException("wrong userId"));
 
         List<String> photos = s3Service.uploadS3(files);
 
