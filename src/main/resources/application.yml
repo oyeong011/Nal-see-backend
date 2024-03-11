@@ -1,13 +1,12 @@
 spring:
-#  config:
-#    import: application-secret.yml
+  profiles:
+    active: dev
+  config:
+    import: application-secret.yml
   datasource:
-#    url: jdbc:mariadb://localhost:3306/nalsee
-#    username: ${spring.datasource.username}
-#    password: ${spring.datasource.password}
-    url: ${MYSQL_URL}
-    username: ${MYSQL_USERNAME}
-    password: ${MYSQL_PASSWORD}
+    url: jdbc:mariadb://localhost:3306/nalsee
+    username: ${spring.datasource.username}
+    password: ${spring.datasource.password}
     driver-class-name: org.mariadb.jdbc.Driver
   jpa:
     database-platform: org.hibernate.dialect.MariaDBDialect
@@ -25,11 +24,25 @@ spring:
 cloud:
   aws:
     credentials:
-      access-key: ${AWS_ACCESS_KEY}
-      secret-key: ${AWS_SECRET_KEY}
-#      access-key: ${cloud.aws.credentials.access-key}
-#      secret-key: ${cloud.aws.credentials.secret-key}
+      access-key: ${cloud.aws.credentials.access-key}
+      secret-key: ${cloud.aws.credentials.secret-key}
     region:
       static: ap-northeast-2
     stack:
       auto: false
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: ${MYSQL_URL}
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_ACCESS_KEY}
+      secret-key: ${AWS_SECRET_KEY}
+---
