@@ -11,6 +11,7 @@ import java.util.List;
 public class PostResponseDto {
     private Long id;
     private List<String> pictureList;
+    private String content;
     private int likeCnt;
 
     private Long userId;
@@ -18,9 +19,10 @@ public class PostResponseDto {
     private String picture;
 
     @Builder
-    public PostResponseDto(java.lang.Long id, List<String> pictureList, int likeCnt, java.lang.Long userId, String username, String picture) {
+    public PostResponseDto(java.lang.Long id, List<String> pictureList, String content, int likeCnt, java.lang.Long userId, String username, String picture) {
         this.id = id;
         this.pictureList = pictureList;
+        this.content = content;
         this.likeCnt = likeCnt;
         this.userId = userId;
         this.username = username;
