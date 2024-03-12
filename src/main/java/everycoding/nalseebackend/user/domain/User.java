@@ -26,6 +26,7 @@ public class User extends BaseEntity {
     //카카오에서 받아올 username, email, picture
     private String username;
     private String email;
+    private String password;
     private String picture;
 
     private String role;
