@@ -76,7 +76,7 @@ public class SecurityConfig {
                 .logout(logout -> logout
                         .logoutUrl("/api/logout")
                         .logoutSuccessHandler(new CustomLogoutSuccessHandler(jwtTokenProvider, customUserDetailsService))
-                        .deleteCookies("JSESSIONID")
+                        .deleteCookies("RefreshToken")
                         .permitAll()
                 )
                 .addFilter(new JwtAuthenticationFilter(jwtTokenProvider, userRepository, authenticationManager(customUserDetailsService), customUserDetailsService, "/api/auth"))
@@ -131,8 +131,8 @@ public class SecurityConfig {
         userDto.setAccessToken("Bearer " + token);
         userDto.setRefreshToken(user.getRefreshToken());
         log.info("Response Body insert User");
-//        String result = om.registerModule(new JavaTimeModule()).writeValueAsString(userDto);
-//        response.getWriter().write(result);
+        String result = om.registerModule(new JavaTimeModule()).writeValueAsString(userDto);
+        response.getWriter().write(result); //body
 //        response.sendRedirect("http://localhost:5173/oauth2/redirect/?token="+token);
 //        response.sendRedirect("https://k547f55f71a44a.user-app.krampoline.com/oauth2/redirect/?token="+token);
     }
