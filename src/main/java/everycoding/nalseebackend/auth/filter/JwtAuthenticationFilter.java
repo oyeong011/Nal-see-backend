@@ -80,21 +80,25 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         log.info("Credential Login Success!");
         //토큰 발급 시작
-        String token = jwtTokenProvider.createAccessToken(authResult);
-        String refresh = jwtTokenProvider.createRefreshToken(authResult);
-        log.info(token);
-        log.info(refresh);
+        String accessToken = jwtTokenProvider.createAccessToken(authResult);
+        String refreshToken = jwtTokenProvider.createRefreshToken(authResult);
+        log.info(accessToken);
+        log.info(refreshToken);
         ObjectMapper om = new ObjectMapper();
 
-        response.addHeader("Authorization", "Bearer " + token);
-        log.info("AccessToken in Header={}", token);
+        Cookie accessTokenCookie = new Cookie("AccessToken", accessToken);
+        accessTokenCookie.setHttpOnly(true);
+        accessTokenCookie.setPath("/");
+        accessTokenCookie.setMaxAge(60*2);
+        response.addCookie(accessTokenCookie);
+        log.info("AccessToken in Cookie={}", accessToken);
 
-        Cookie refreshTokenCookie = new Cookie("RefreshToken", refresh);
+        Cookie refreshTokenCookie = new Cookie("RefreshToken", refreshToken);
         refreshTokenCookie.setHttpOnly(true);
         refreshTokenCookie.setPath("/");
         refreshTokenCookie.setMaxAge(60 * 60 * 24 * 7);
         response.addCookie(refreshTokenCookie);
-        log.info("RefreshToken in Cookie={}", refresh);
+        log.info("RefreshToken in Cookie={}", refreshToken);
 
         String role = authResult.getAuthorities().stream().map(GrantedAuthority::getAuthority).findAny().orElse("");
         String userEmail = "";
@@ -103,11 +107,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             userEmail = customUserDetails.getUsername();
         }
         User user = customUserDetailsService.selcetUser(userEmail);
-        user.setRefreshToken(refresh);
+        user.setRefreshToken(refreshToken);
         userRepository.save(user);
         UserDto userDto = new UserDto();
         userDto.setUserId(user.getId());
-        userDto.setAccessToken("Bearer " + token);
+        userDto.setAccessToken("Bearer " + accessToken);
         userDto.setRefreshToken(user.getRefreshToken());
         log.info("Response Body insert User");
         String result = om.registerModule(new JavaTimeModule()).writeValueAsString(userDto);

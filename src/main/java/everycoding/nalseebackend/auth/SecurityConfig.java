@@ -76,7 +76,7 @@ public class SecurityConfig {
                 .logout(logout -> logout
                         .logoutUrl("/api/logout")
                         .logoutSuccessHandler(new CustomLogoutSuccessHandler(jwtTokenProvider, customUserDetailsService))
-                        .deleteCookies("RefreshToken")
+                        .deleteCookies("RefreshToken","AccessToken")
                         .permitAll()
                 )
                 .addFilter(new JwtAuthenticationFilter(jwtTokenProvider, userRepository, authenticationManager(customUserDetailsService), customUserDetailsService, "/api/auth"))
@@ -94,28 +94,35 @@ public class SecurityConfig {
                                         Authentication authentication) throws IOException, ServletException {
         log.info("OAuth Login Success!");
         //토큰 발급 시작
-        String token = jwtTokenProvider.createAccessToken(authentication);
-        String refresh = jwtTokenProvider.createRefreshToken(authentication);
+        String accessToken = jwtTokenProvider.createAccessToken(authentication);
+        String refreshToken = jwtTokenProvider.createRefreshToken(authentication);
         log.info("test={}", authentication.getName());
         log.info("test={}", authentication.getAuthorities());
         log.info("test={}", authentication.getDetails());
         log.info("test={}", authentication.getClass());
         log.info("test={}", authentication.getPrincipal());
 
-        log.info(token);
-        log.info(refresh);
+        log.info(accessToken);
+        log.info(refreshToken);
         ObjectMapper om = new ObjectMapper();
 
-        response.addHeader("Authorization", "Bearer " + token);
-        log.info("AccessToken in Header={}", token);
-        log.info("header={}", response.getHeader("Authorization"));
+//        response.addHeader("Authorization", "Bearer " + accessToken);
+//        log.info("AccessToken in Header={}", accessToken);
+//        log.info("header={}", response.getHeader("Authorization"));
 
-        Cookie refreshTokenCookie = new Cookie("RefreshToken", refresh);
+        Cookie accessTokenCookie = new Cookie("AccessToken", accessToken);
+        accessTokenCookie.setHttpOnly(true);
+        accessTokenCookie.setPath("/");
+        accessTokenCookie.setMaxAge(60*2);
+        response.addCookie(accessTokenCookie);
+        log.info("AccessToken in Cookie={}", accessToken);
+
+        Cookie refreshTokenCookie = new Cookie("RefreshToken", refreshToken);
         refreshTokenCookie.setHttpOnly(true);
         refreshTokenCookie.setPath("/");
         refreshTokenCookie.setMaxAge(60 * 60 * 24 * 7);
         response.addCookie(refreshTokenCookie);
-        log.info("RefreshToken in Cookie={}", refresh);
+        log.info("RefreshToken in Cookie={}", refreshToken);
 
         String role = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).findAny().orElse("");
         String userEmail = "";
@@ -124,11 +131,11 @@ public class SecurityConfig {
             userEmail = customUserDetails.getUsername();
         }
         User user = customUserDetailsService.selcetUser(userEmail);
-        user.setRefreshToken(refresh);
+        user.setRefreshToken(refreshToken);
         userRepository.save(user);
         UserDto userDto = new UserDto();
         userDto.setUserId(user.getId());
-        userDto.setAccessToken("Bearer " + token);
+        userDto.setAccessToken("Bearer " + accessToken);
         userDto.setRefreshToken(user.getRefreshToken());
         log.info("Response Body insert User");
         String result = om.registerModule(new JavaTimeModule()).writeValueAsString(userDto);

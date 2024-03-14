@@ -24,22 +24,32 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
 
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        String token = request.getHeader("Authorization");
-        if (token != null && token.startsWith("Bearer ")) {
-            log.info("자 인자 토큰으로 아이디 찾는다={}", token);
-            String email = jwtTokenProvider.getClaims(token.substring(7)).getSubject();
-            log.info("내가 안뜨면 토큰이 문제여");
-            userService.clearRefreshToken(email);
+
+        String accessToken = null;
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("AccessToken".equals(cookie.getName())) {
+                    accessToken = cookie.getValue().replace("Bearer ", "");
+                    break;
+                }
+            }
         }
+            if (accessToken != null && accessToken.startsWith("Bearer ")) {
+                log.info("자 인자 토큰으로 아이디 찾는다={}", accessToken);
+                String email = jwtTokenProvider.getClaims(accessToken.substring(7)).getSubject();
+                log.info("내가 안뜨면 토큰이 문제여");
+                userService.clearRefreshToken(email);
+            }
 
-        Cookie cookie = new Cookie("RefreshToken", null);
-        cookie.setPath("/");
-        cookie.setMaxAge(0);
-        cookie.setHttpOnly(true);
-        response.addCookie(cookie);
+            Cookie cookie = new Cookie("RefreshToken", null);
+            cookie.setPath("/");
+            cookie.setMaxAge(0);
+            cookie.setHttpOnly(true);
+            response.addCookie(cookie);
 
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.getWriter().flush();
-    }
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.getWriter().flush();
+        }
 
 }

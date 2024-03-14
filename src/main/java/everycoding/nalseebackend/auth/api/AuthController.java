@@ -13,4 +13,9 @@ public class AuthController {
         return "hello";
     }
 
+    @GetMapping("/hello")
+    public String bye() {
+        return "bye";
+    }
+
 }

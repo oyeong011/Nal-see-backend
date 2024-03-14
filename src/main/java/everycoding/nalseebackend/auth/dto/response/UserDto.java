@@ -10,5 +10,7 @@ public class UserDto {
 
     private String refreshToken;
 
-    private Integer expTime = 3600;
+//    private Integer expTime = 3600;
+
+    private Integer expTime = 120;
 }
