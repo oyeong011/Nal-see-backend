@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Information Display</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            margin: 20px;
+        }
+        .input-field {
+            margin-bottom: 10px;
+        }
+        .input-label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .output {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="input-field">
+        <label for="username" class="input-label">Username:</label>
+        <input type="text" id="username">
+    </div>
+    <div class="input-field">
+        <label for="email" class="input-label">Email:</label>
+        <input type="email" id="email">
+    </div>
+    <div class="input-field">
+        <label for="code" class="input-label">Code:</label>
+        <input type="text" id="code">
+    </div>
+    <button onclick="displayInfo()">Display Information</button>
+    <div class="output" id="output">
+        <!-- User input will be shown here -->
+    </div>
+</div>
+<script>
+    function displayInfo() {
+        var username = document.getElementById('username').value;
+        var email = document.getElementById('email').value;
+        var code = document.getElementById('code').value;
+
+        var outputDiv = document.getElementById('output');
+        outputDiv.innerHTML = '<p><strong>Username:</strong> ' + username + '</p>';
+        outputDiv.innerHTML += '<p><strong>Email:</strong> ' + email + '</p>';
+        outputDiv.innerHTML += '<p><strong>Code:</strong> ' + code + '</p>';
+    }
+</script>
+</body>
+</html>
+

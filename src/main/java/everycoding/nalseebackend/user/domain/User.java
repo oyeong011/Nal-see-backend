@@ -1,12 +1,15 @@
 package everycoding.nalseebackend.user.domain;
 
 import everycoding.nalseebackend.BaseEntity;
+import everycoding.nalseebackend.auth.oauth2.AuthProvider;
+import everycoding.nalseebackend.auth.oauth2.OAuth2UserInfo;
 import everycoding.nalseebackend.chat.domain.Chat;
 import everycoding.nalseebackend.comment.domain.Comment;
 import everycoding.nalseebackend.post.domain.Post;
 import jakarta.persistence.Entity;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,6 +29,7 @@ public class User extends BaseEntity {
     //카카오에서 받아올 username, email, picture
     private String username;
     private String email;
+    private String password;
     private String picture;
 
     private String role;
@@ -33,8 +37,8 @@ public class User extends BaseEntity {
     @Setter
     private String refreshToken;
 
-    private String provider;
-//    private String providerId;
+    private AuthProvider provider;
+    private String providerId;
 
     @ElementCollection
     private List<String> postLikeList;
@@ -57,5 +61,34 @@ public class User extends BaseEntity {
     public User(String username, String email) {
         this.username = username;
         this.email = email;
+    }
+
+    @Builder
+    public User(Long id, String username, String email, String password, String picture, String role, String refreshToken, AuthProvider provider, String providerId) {
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.picture = picture;
+        this.role = role;
+        this.refreshToken = refreshToken;
+        this.provider = provider;
+        this.providerId = providerId;
+    }
+
+    public static User createNewUser(AuthProvider provider, String providerId, String username, String email, String imageUrl, String role){
+        return User.builder()
+                .provider(provider)
+                .providerId(providerId)
+                .username(username)
+                .email(email)
+                .picture(imageUrl)
+                .role(role)
+                .build();
+    }
+
+    public void updateOAuth2UserInfo(OAuth2UserInfo oAuth2UserInfo) {
+        this.username = oAuth2UserInfo.getName();
+        this.picture = oAuth2UserInfo.getImageUrl();
     }
 }
