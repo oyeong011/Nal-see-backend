@@ -112,7 +112,20 @@ public class PostServiceImpl implements PostService{
 
     @Override
     public void likePost(Long userId, Long postId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new BaseException("wrong userId"));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new BaseException("wrong postId"));
 
+        user.addPostLike(postId);
+        post.increaseLikeCNT();
+    }
+
+    @Override
+    public void cancelLikePost(Long userId, Long postId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new BaseException("wrong userId"));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new BaseException("wrong postId"));
+
+        user.cancelPostLike(postId);
+        post.decreaseLikeCNT();
     }
 
     private void getWeather(LocalDateTime localDateTime, double latitude, double longitude) {

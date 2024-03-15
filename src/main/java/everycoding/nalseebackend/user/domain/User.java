@@ -41,10 +41,10 @@ public class User extends BaseEntity {
     private String providerId;
 
     @ElementCollection
-    private List<String> postLikeList;
+    private List<Long> postLikeList;
 
     @ElementCollection
-    private List<String> commentLikeList;
+    private List<Long> commentLikeList;
 
     @OneToOne(fetch = FetchType.LAZY)
     private UserINF userINF;
@@ -90,5 +90,21 @@ public class User extends BaseEntity {
     public void updateOAuth2UserInfo(OAuth2UserInfo oAuth2UserInfo) {
         this.username = oAuth2UserInfo.getName();
         this.picture = oAuth2UserInfo.getImageUrl();
+    }
+
+    public void addPostLike(Long postId) {
+        postLikeList.add(postId);
+    }
+
+    public void cancelPostLike(Long postId) {
+        postLikeList.remove(postId);
+    }
+
+    public void addCommentLike(Long commentId) {
+        commentLikeList.add(commentId);
+    }
+
+    public void cancelCommentLike(Long commentId) {
+        commentLikeList.remove(commentId);
     }
 }

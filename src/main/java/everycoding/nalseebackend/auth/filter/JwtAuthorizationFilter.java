@@ -93,7 +93,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             CustomUserDetails customUserDetails = CustomUserDetails.create(user);
 
             UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(customUserDetails.getUsername(), null, customUserDetails.getAuthorities());
+                    new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication); // 세션에 넣기
             return authentication;
         }

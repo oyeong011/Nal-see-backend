@@ -57,6 +57,19 @@ public class CommentServiceImpl implements CommentService{
 
     @Override
     public void likeComment(Long postId, Long commentId, Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new BaseException("wrong userId"));
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new BaseException("wrong commentId"));
 
+        user.addCommentLike(commentId);
+        comment.increaseLikeCNT();
+    }
+
+    @Override
+    public void cancelLikeComment(Long postId, Long commentId, Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new BaseException("wrong userId"));
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new BaseException("wrong commentId"));
+
+        user.cancelCommentLike(commentId);
+        comment.decreaseLikeCNT();
     }
 }
