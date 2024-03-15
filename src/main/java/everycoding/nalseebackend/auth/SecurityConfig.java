@@ -114,7 +114,7 @@ public class SecurityConfig {
         Cookie accessTokenCookie = new Cookie("AccessToken", accessToken);
         accessTokenCookie.setHttpOnly(true);
         accessTokenCookie.setPath("/");
-        accessTokenCookie.setMaxAge(60*2);
+        accessTokenCookie.setMaxAge(60*60);
         response.addCookie(accessTokenCookie);
         log.info("AccessToken in Cookie={}", accessToken);
 
