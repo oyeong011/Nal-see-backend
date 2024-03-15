@@ -48,7 +48,8 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
             cookie.setHttpOnly(true);
             response.addCookie(cookie);
 
-            response.setStatus(HttpServletResponse.SC_OK);
+            log.info("Success logout");
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             response.getWriter().flush();
         }
 
