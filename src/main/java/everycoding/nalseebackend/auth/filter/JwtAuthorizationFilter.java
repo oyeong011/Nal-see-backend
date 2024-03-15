@@ -64,6 +64,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             }
         }
 
+        if(accessToken !=null && refreshToken == null)
+        {
+            response.sendRedirect("http://localhost:8080/api/logout");
+            log.info("RefreshToken만료로 로그아웃");
+        }
+
         if (!tokenProcessed && refreshToken != null) {
             // 액세스 토큰이 처리되지 않았고, 유효한 리프레시 토큰이 있는 경우 새로운 액세스 토큰 발급
             String tokenValidationResult = jwtTokenProvider.validateToken(refreshToken.replace("Bearer ", ""));
@@ -85,6 +91,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 // 기존 액세스 토큰 쿠키를 삭제하기 위해 Max-Age를 0으로 설정한 쿠키를 생성하고 응답에 추가합니다.
                 return; // 요청 처리 중단
             }
+
         }
         chain.doFilter(request, response);
     }
