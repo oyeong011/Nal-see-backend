@@ -49,14 +49,14 @@ public class PostController {
     }
 
     // 게시물 좋아요
-    @GetMapping("/api/posts/{postId}/likes")
+    @PostMapping("/api/posts/{postId}/likes")
     public ApiResponse<Void> likePost(@AuthenticationPrincipal CustomUserDetails customUserDetails,@PathVariable Long postId) {
         postService.likePost(customUserDetails.getId(), postId);
         return ApiResponse.ok();
     }
 
     // 게시물 좋아요 취소
-    @GetMapping("/api/posts/{postId}/likes/cancel")
+    @PostMapping("/api/posts/{postId}/likes/cancel")
     public ApiResponse<Void> cancelLikePost(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable Long postId) {
         postService.cancelLikePost(customUserDetails.getId(), postId);
         return ApiResponse.ok();

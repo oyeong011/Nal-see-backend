@@ -33,7 +33,7 @@ public class CommentController {
     }
 
     // 댓글 좋아요
-    @GetMapping("/api/posts/{postId}/comment/{commentId}/likes")
+    @PostMapping("/api/posts/{postId}/comment/{commentId}/likes")
     public ApiResponse<Void> likeComment(
             @PathVariable Long postId,
             @PathVariable Long commentId,
@@ -44,7 +44,7 @@ public class CommentController {
     }
 
     // 댓글 좋아요 취소
-    @GetMapping("/api/posts/{postId}/comment/{commentId}/likes/cancel")
+    @PostMapping("/api/posts/{postId}/comment/{commentId}/likes/cancel")
     public ApiResponse<Void> cancelLikeComment(
             @PathVariable Long postId,
             @PathVariable Long commentId,

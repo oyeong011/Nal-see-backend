@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -14,7 +15,7 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/api/users/{userId}/follow")
+    @PostMapping("/api/users/{userId}/follow")
     public ApiResponse<Void> followUser(
             @PathVariable Long userId,
             @AuthenticationPrincipal CustomUserDetails customUserDetails
@@ -23,7 +24,7 @@ public class UserController {
         return ApiResponse.ok();
     }
 
-    @GetMapping("/api/users/{userId}/unfollow")
+    @PostMapping("/api/users/{userId}/unfollow")
     public ApiResponse<Void> unfollowUser(
             @PathVariable Long userId,
             @AuthenticationPrincipal CustomUserDetails customUserDetails
