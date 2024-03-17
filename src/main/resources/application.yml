@@ -25,7 +25,7 @@ spring:
           kakao:
             client-id: ${spring.security.oauth2.client.registration.kakao.client-id}
             client-secret: ${spring.security.oauth2.client.registration.kakao.client-secret}
-            redirect-uri: http://localhost:8080/login/oauth2/code/{registrationId}
+            redirect-uri: ${spring.security.oauth2.client.registration.kakao.redirect-uri}
             authorization-grant-type: authorization_code
             scope:
                 - profile_nickname
