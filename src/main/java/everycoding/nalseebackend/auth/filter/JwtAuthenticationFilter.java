@@ -89,7 +89,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         Cookie accessTokenCookie = new Cookie("AccessToken", accessToken);
         accessTokenCookie.setHttpOnly(true);
         accessTokenCookie.setPath("/");
+        accessTokenCookie.setDomain("localhost");
         accessTokenCookie.setMaxAge(60*60);
+        String accessToken = "cookieName=" + accessTokenCookie.getValue() + "; Path=" + accessTokenCookie.getPath() + "; Secure; HttpOnly; SameSite=None";
         response.addCookie(accessTokenCookie);
         log.info("AccessToken in Cookie={}", accessToken);
 

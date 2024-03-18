@@ -109,6 +109,7 @@ public class SecurityConfig {
         Cookie accessTokenCookie = new Cookie("AccessToken", accessToken);
         accessTokenCookie.setHttpOnly(true);
         accessTokenCookie.setPath("/");
+        accessTokenCookie.setDomain("localhost");
         accessTokenCookie.setMaxAge(60*60);
         response.addCookie(accessTokenCookie);
         log.info("AccessToken in Cookie={}", accessToken);
@@ -116,6 +117,7 @@ public class SecurityConfig {
         Cookie refreshTokenCookie = new Cookie("RefreshToken", refreshToken);
         refreshTokenCookie.setHttpOnly(true);
         refreshTokenCookie.setPath("/");
+        refreshTokenCookie.setDomain("localhost");
         refreshTokenCookie.setMaxAge(60 * 60 * 24 * 7);
         response.addCookie(refreshTokenCookie);
         log.info("RefreshToken in Cookie={}", refreshToken);

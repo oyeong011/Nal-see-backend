@@ -113,6 +113,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         Cookie cookie = new Cookie( cookieName, cookieValue);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
+        cookie.setDomain("localhost");
         cookie.setMaxAge(maxAge);
         response.addCookie(cookie);
     }
