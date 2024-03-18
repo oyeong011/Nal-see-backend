@@ -2,9 +2,6 @@ spring:
   profiles:
     active: dev
   datasource:
-    url: jdbc:mariadb://localhost:3306/nalsee?useUnicode=true&characterEncoding=utf8mb4&serverTimezone=UTC
-    username: ${spring.datasource.username}
-    password: ${spring.datasource.password}
     driver-class-name: org.mariadb.jdbc.Driver
   jpa:
     database-platform: org.hibernate.dialect.MariaDBDialect
@@ -23,9 +20,6 @@ spring:
       client:
         registration:
           kakao:
-            client-id: ${spring.security.oauth2.client.registration.kakao.client-id}
-            client-secret: ${spring.security.oauth2.client.registration.kakao.client-secret}
-            redirect-uri: http://localhost:8080/login/oauth2/code/{registrationId}
             authorization-grant-type: authorization_code
             scope:
                 - profile_nickname
@@ -43,9 +37,6 @@ spring:
 
 cloud:
   aws:
-    credentials:
-      access-key: ${cloud.aws.credentials.access-key}
-      secret-key: ${cloud.aws.credentials.secret-key}
     region:
       static: ap-northeast-2
     stack:

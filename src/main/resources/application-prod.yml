@@ -3,6 +3,14 @@ spring:
     url: ${MYSQL_URL}
     username: ${MYSQL_USERNAME}
     password: ${MYSQL_PASSWORD}
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: ${OAUTH_KAKAO_ID}
+            client-secret: ${OAUTH_KAKAO_SECRET}
+            redirect-uri: ${OAUTH_KAKAO_URI}
 cloud:
    aws:
     credentials:
