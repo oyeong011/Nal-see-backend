@@ -46,13 +46,13 @@ public class JwtTokenProvider {
         return Jwts.parser()
                 .verifyWith(SECRET_KEY)
                 .build()
-                .parseEncryptedClaims(token)
+                .parseSignedClaims(token)
                 .getPayload();
     }
 
-    public String validateToken(String tk) {
+    public String validateToken(String accessToken) {
         try {
-            Jwts.parser().verifyWith(SECRET_KEY).build().parseEncryptedClaims(tk);
+            Jwts.parser().verifyWith(SECRET_KEY).build().parseSignedClaims(accessToken);
             return "Success";
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             return "signature is wrong.";

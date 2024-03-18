@@ -37,6 +37,8 @@ public class User extends BaseEntity {
 
     private String role;
 
+    private boolean newUser = true;
+
     @Setter
     private String refreshToken;
 
