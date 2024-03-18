@@ -138,6 +138,7 @@ public class SecurityConfig {
         response.getWriter().write(result); //body
 //        response.sendRedirect("http://localhost:5173/oauth2/redirect");
 //        response.sendRedirect("https://k547f55f71a44a.user-app.krampoline.com/oauth2/redirect/?token="+token);
+        response.sendRedirect("http://localhost:5173");
     }
 
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
