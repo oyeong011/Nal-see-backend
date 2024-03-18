@@ -131,8 +131,8 @@ public class SecurityConfig {
         userDto.setAccessToken("Bearer " + token);
         userDto.setRefreshToken(user.getRefreshToken());
         log.info("Response Body insert User");
-//        String result = om.registerModule(new JavaTimeModule()).writeValueAsString(userDto);
-//        response.getWriter().write(result);
+        String result = om.registerModule(new JavaTimeModule()).writeValueAsString(userDto);
+        response.getWriter().write(result);
 //        response.sendRedirect("http://localhost:5173/oauth2/redirect/?token="+token);
 //        response.sendRedirect("https://k547f55f71a44a.user-app.krampoline.com/oauth2/redirect/?token="+token);
     }
