@@ -1,12 +1,16 @@
 package everycoding.nalseebackend.auth.api;
 
+import everycoding.nalseebackend.auth.dto.request.SignupRequestDto;
 import everycoding.nalseebackend.auth.dto.request.UserResponse;
 import everycoding.nalseebackend.user.UserService;
 import everycoding.nalseebackend.user.domain.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -14,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final UserService userService;
+
     @GetMapping("/index")
     public UserResponse getUserInfo() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -26,9 +31,9 @@ public class AuthController {
         return new UserResponse(user.getId(), user.getUsername(), user.getEmail(), user.isNewUser());
     }
 
-    @GetMapping("/hello")
-    public String bye() {
-        return "bye";
+    @PostMapping("/api/signup")
+    public ResponseEntity<?> signUpUser(@RequestBody SignupRequestDto signupRequestDto) {
+        userService.signUpUser(signupRequestDto);
+        return ResponseEntity.ok().build();
     }
-
 }
