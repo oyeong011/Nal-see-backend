@@ -110,7 +110,10 @@ public class SecurityConfig {
         accessTokenCookie.setHttpOnly(true);
         accessTokenCookie.setPath("/");
         accessTokenCookie.setMaxAge(60*60);
+        // SameSite 속성을 쿠키 문자열에 직접 추가
+        String accessTokenCookieString = "AccessToken=" + accessToken + "; Path=/; HttpOnly; Max-Age=3600; Secure = true; SameSite=None";
         response.addCookie(accessTokenCookie);
+        response.addHeader("Set-Cookie", accessTokenCookieString);
 
         log.info("AccessToken in Cookie={}", accessToken);
 
@@ -118,6 +121,8 @@ public class SecurityConfig {
         refreshTokenCookie.setHttpOnly(true);
         refreshTokenCookie.setPath("/");
         refreshTokenCookie.setMaxAge(60 * 60 * 24 * 7);
+        String refreshTokenCookieString = "RefreshToken=" + refreshToken + "; Path=/; HttpOnly; Max-Age=" + (60 * 60 * 24 * 7) + "; Secure = true; SameSite=None";
+        response.addHeader("Set-Cookie", refreshTokenCookieString);
         response.addCookie(refreshTokenCookie);
         log.info("RefreshToken in Cookie={}", refreshToken);
 
