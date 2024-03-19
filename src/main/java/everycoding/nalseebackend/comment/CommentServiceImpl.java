@@ -62,6 +62,9 @@ public class CommentServiceImpl implements CommentService{
 
         user.addCommentLike(commentId);
         comment.increaseLikeCNT();
+
+        userRepository.save(user);
+        commentRepository.save(comment);
     }
 
     @Override
@@ -71,5 +74,8 @@ public class CommentServiceImpl implements CommentService{
 
         user.cancelCommentLike(commentId);
         comment.decreaseLikeCNT();
+
+        userRepository.save(user);
+        commentRepository.save(comment);
     }
 }

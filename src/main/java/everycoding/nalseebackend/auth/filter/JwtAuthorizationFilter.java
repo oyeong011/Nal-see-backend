@@ -103,7 +103,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             if (optionalUser.isPresent()) {
                 User user = optionalUser.get();
                 CustomUserDetails customUserDetails = CustomUserDetails.create(user);
-                return new UsernamePasswordAuthenticationToken(customUserDetails.getUsername(), null, customUserDetails.getAuthorities());
+                return new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
             }
         }
         return null;
