@@ -44,7 +44,6 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
 
             Cookie cookie = new Cookie("RefreshToken", null);
             cookie.setPath("/");
-            cookie.setDomain("localhost");
             cookie.setMaxAge(0);
             cookie.setHttpOnly(true);
             response.addCookie(cookie);

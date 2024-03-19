@@ -89,15 +89,20 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         Cookie accessTokenCookie = new Cookie("AccessToken", accessToken);
         accessTokenCookie.setHttpOnly(true);
         accessTokenCookie.setPath("/");
-        accessTokenCookie.setDomain("localhost");
         accessTokenCookie.setMaxAge(60*60);
+        // SameSite 속성을 쿠키 문자열에 직접 추가
+        String accessTokenCookieString = "AccessToken=" + accessToken + "; Path=/; HttpOnly; Max-Age=3600; Secure; SameSite=None";
         response.addCookie(accessTokenCookie);
+        response.addHeader("Set-Cookie", accessTokenCookieString);
+
         log.info("AccessToken in Cookie={}", accessToken);
 
         Cookie refreshTokenCookie = new Cookie("RefreshToken", refreshToken);
         refreshTokenCookie.setHttpOnly(true);
         refreshTokenCookie.setPath("/");
         refreshTokenCookie.setMaxAge(60 * 60 * 24 * 7);
+        String refreshTokenCookieString = "RefreshToken=" + refreshToken + "; Path=/; HttpOnly; Max-Age=" + (60 * 60 * 24 * 7) + "; Secure; SameSite=None";
+        response.addHeader("Set-Cookie", refreshTokenCookieString);
         response.addCookie(refreshTokenCookie);
         log.info("RefreshToken in Cookie={}", refreshToken);
 
