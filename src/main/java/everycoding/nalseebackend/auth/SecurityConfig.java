@@ -144,7 +144,7 @@ public class SecurityConfig {
         response.getWriter().write(result); //body
 //        response.sendRedirect("http://localhost:5173/oauth2/redirect");
 //        response.sendRedirect("https://k547f55f71a44a.user-app.krampoline.com/oauth2/redirect/?token="+token);
-        response.sendRedirect("http://localhost:5173");
+        response.sendRedirect("https://do935ibb4yty7.cloudfront.net");
     }
 
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
@@ -168,7 +168,7 @@ public class SecurityConfig {
         corsConfiguration.setAllowCredentials(true);
 
 //      corsConfiguration.setAllowedOrigins(List.of("http://localhost:5173", "https://ide-frontend-wheat.vercel.app/login", "https://ide-frontend-six.vercel.app", "https://ide-frontend-wheat.vercel.app"));
-        corsConfiguration.setAllowedOrigins(List.of("http://localhost:5173","http://ec2-43-203-106-91.ap-northeast-2.compute.amazonaws.com:8080"));
+        corsConfiguration.setAllowedOrigins(List.of("http://localhost:5173", "https://do935ibb4yty7.cloudfront.net","https://nalsee.site"));
         corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"));
         corsConfiguration.setAllowCredentials(true);
 
