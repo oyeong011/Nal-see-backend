@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,6 +36,7 @@ public class PostServiceImpl implements PostService{
     private final UserRepository userRepository;
     private final S3Service s3Service;
     private final RestTemplate restTemplate;
+    private final PostSpecification postSpecification;
 
     @Override
     public List<PostResponseDto> getPosts(Long lastPostId, int size) {
@@ -80,8 +82,41 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public List<PostResponseDto> searchPosts(String keyword) {
-        return null;
+    public List<PostResponseDto> searchPosts(List<String> weathers, Double minTemperature, Double maxTemperature, Double minHeight, Double maxHeight,
+                                             Double minWeight, Double maxWeight, String constitution, List<String> styles, String gender) {
+        Specification<Post> spec = Specification.where(null);
+
+        if (weathers != null) {
+            spec = spec.and(postSpecification.hasWeatherIn(weathers));
+        }
+        spec = spec.and(postSpecification.isTemperatureBetween(minTemperature, maxTemperature));
+        spec = spec.and(postSpecification.isHeightBetween(minHeight, maxHeight));
+        spec = spec.and(postSpecification.isWeightBetween(minWeight, maxWeight));
+        if (constitution != null) {
+            spec = spec.and(postSpecification.hasConstitution(constitution));
+        }
+        if (styles != null) {
+            spec = spec.and(postSpecification.hasStyleIn(styles));
+        }
+        if (gender != null) {
+            spec = spec.and(postSpecification.hasGender(gender));
+        }
+
+        return postRepository.findAll(spec)
+                .stream()
+                .map(post -> PostResponseDto.builder()
+                        .id(post.getId())
+                        .pictureList(post.getPictureList())
+                        .content(post.getContent())
+                        .likeCnt(post.getLikeCNT())
+                        .address(post.getAddress())
+                        .weather(post.getWeather())
+                        .temperature(post.getTemperature())
+                        .userId(post.getUser().getId())
+                        .username(post.getUser().getUsername())
+                        .userImage(post.getUser().getPicture())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     @Override

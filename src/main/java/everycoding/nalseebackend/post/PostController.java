@@ -37,8 +37,19 @@ public class PostController {
 
     // 검색
     @GetMapping("/api/posts/search")
-    public ApiResponse<List<PostResponseDto>> searchPosts(@RequestParam String keyword) {
-        return ApiResponse.ok(postService.searchPosts(keyword));
+    public ApiResponse<List<PostResponseDto>> searchPosts(
+            @RequestParam(required = false) List<String> weathers,
+            @RequestParam(required = false) Double minTemperature,
+            @RequestParam(required = false) Double maxTemperature,
+            @RequestParam(required = false) Double minHeight,
+            @RequestParam(required = false) Double maxHeight,
+            @RequestParam(required = false) Double minWeight,
+            @RequestParam(required = false) Double maxWeight,
+            @RequestParam(required = false) String constitution,
+            @RequestParam(required = false) List<String> styles,
+            @RequestParam(required = false) String gender
+    ) {
+        return ApiResponse.ok(postService.searchPosts(weathers, minTemperature, maxTemperature, minHeight, maxHeight, minWeight, maxWeight, constitution, styles, gender));
     }
 
     // 게시물 등록

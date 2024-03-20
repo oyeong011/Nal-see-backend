@@ -15,7 +15,8 @@ public interface PostService {
     List<PostResponseDto> getPostsInLocation(double bottomLeftLat, double bottomLeftLong,
                                              double topRightLat, double topRightLong);
 
-    List<PostResponseDto> searchPosts(String keyword);
+    List<PostResponseDto> searchPosts(List<String> weathers, Double minTemperature, Double maxTemperature, Double minHeight, Double maxHeight,
+                                      Double minWeight, Double maxWeight, String constitution, List<String> styles, String gender);
 
     void post(PostRequestDto postRequestDto, HttpServletRequest request) throws IOException;
 
