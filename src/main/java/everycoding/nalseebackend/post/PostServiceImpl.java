@@ -99,7 +99,7 @@ public class PostServiceImpl implements PostService{
                         .pictureList(photos)
                         .content(postRequestDto.getContent())
                         .user(user)
-                        .weather(weatherResponseDto.getWeather().getFirst().getMain())
+                        .weather(weatherResponseDto.getWeather().get(0).getMain())
                         .temperature(Math.ceil((weatherResponseDto.getMain().getTemp()- 273.15)*10)/10.0)
                         .address(postRequestDto.getAddress())
                         .latitude(postRequestDto.getLatitude())
