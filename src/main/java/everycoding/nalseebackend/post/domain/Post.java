@@ -2,10 +2,10 @@ package everycoding.nalseebackend.post.domain;
 
 import everycoding.nalseebackend.BaseEntity;
 import everycoding.nalseebackend.comment.domain.Comment;
+import everycoding.nalseebackend.user.domain.Constitution;
 import everycoding.nalseebackend.user.domain.FashionStyle;
 import everycoding.nalseebackend.user.domain.Gender;
 import everycoding.nalseebackend.user.domain.User;
-import everycoding.nalseebackend.weather.domain.Weather;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -47,7 +47,9 @@ public class Post extends BaseEntity {
     private Integer height;
     private Integer weight;
     private String bodyShape;
-    private String constitution;
+
+    @Enumerated(EnumType.STRING)
+    private Constitution constitution;
 
     @Enumerated(EnumType.STRING)
     private FashionStyle style;
@@ -60,7 +62,7 @@ public class Post extends BaseEntity {
 //    private String productName;
 
     @Builder
-    public Post(List<String> pictureList, String content, User user, String weather, double temperature, String address, double longitude, double latitude, int height, int weight, String bodyShape, String constitution, FashionStyle style, Gender gender) {
+    public Post(List<String> pictureList, String content, User user, String weather, double temperature, String address, double longitude, double latitude, int height, int weight, String bodyShape, Constitution constitution, FashionStyle style, Gender gender) {
         this.pictureList = pictureList;
         this.content = content;
         likeCNT = 0;
