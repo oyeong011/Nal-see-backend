@@ -9,6 +9,7 @@ public class PostRequestDto {
 
     private String content;
 
+    private String address;
     private Double latitude;
     private Double longitude;
 

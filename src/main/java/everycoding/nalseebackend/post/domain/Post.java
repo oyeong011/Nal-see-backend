@@ -37,6 +37,7 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post")
     private List<Comment> comments;
 
+    private String address;
     private double longitude;
     private double latitude;
 
@@ -59,7 +60,7 @@ public class Post extends BaseEntity {
 //    private String productName;
 
     @Builder
-    public Post(List<String> pictureList, String content, User user, String weather, double temperature, double longitude, double latitude, int height, int weight, String bodyShape, String constitution, FashionStyle style, Gender gender) {
+    public Post(List<String> pictureList, String content, User user, String weather, double temperature, String address, double longitude, double latitude, int height, int weight, String bodyShape, String constitution, FashionStyle style, Gender gender) {
         this.pictureList = pictureList;
         this.content = content;
         likeCNT = 0;
@@ -67,6 +68,7 @@ public class Post extends BaseEntity {
         comments = new ArrayList<>();
         this.weather = weather;
         this.temperature = temperature;
+        this.address = address;
         this.longitude = longitude;
         this.latitude = latitude;
         this.height = height;
