@@ -6,6 +6,7 @@ import everycoding.nalseebackend.post.domain.Post;
 import everycoding.nalseebackend.post.dto.PostRequestDto;
 import everycoding.nalseebackend.post.dto.PostResponseDto;
 import everycoding.nalseebackend.user.UserRepository;
+import everycoding.nalseebackend.user.domain.Constitution;
 import everycoding.nalseebackend.user.domain.FashionStyle;
 import everycoding.nalseebackend.user.domain.Gender;
 import everycoding.nalseebackend.user.domain.User;
@@ -107,7 +108,7 @@ public class PostServiceImpl implements PostService{
                         .height(postRequestDto.getHeight())
                         .weight(postRequestDto.getWeight())
                         .bodyShape(postRequestDto.getBodyShape())
-                        .constitution(postRequestDto.getConstitution())
+                        .constitution(Constitution.valueOf(postRequestDto.getConstitution()))
                         .style(FashionStyle.valueOf(postRequestDto.getStyle()))
                         .gender(Gender.valueOf(postRequestDto.getGender()))
                         .build()

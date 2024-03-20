@@ -24,6 +24,8 @@ public class UserService {
         User me = userRepository.findById(myId).orElseThrow(() -> new BaseException("wrong userId"));
 
         me.follow(user);
+
+        userRepository.save(me);
     }
 
     public void unfollowUser(Long userId, Long myId) {
@@ -31,6 +33,8 @@ public class UserService {
         User me = userRepository.findById(myId).orElseThrow(() -> new BaseException("wrong userId"));
 
         me.unfollow(user);
+
+        userRepository.save(me);
     }
 
     public User findByEmail(String email) {
@@ -52,6 +56,5 @@ public class UserService {
         userRepository.save(user);
 
         log.info("회원가입 완료");
-
     }
 }
