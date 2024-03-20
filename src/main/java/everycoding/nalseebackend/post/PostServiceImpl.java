@@ -19,7 +19,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,9 +48,11 @@ public class PostServiceImpl implements PostService{
                 .map(post -> PostResponseDto.builder()
                         .id(post.getId())
                         .pictureList(post.getPictureList())
+                        .content(post.getContent())
                         .likeCnt(post.getLikeCNT())
+                        .createDate(post.getCreateDate())
                         .userId(post.getUser().getId())
-                        .picture(post.getUser().getPicture())
+                        .userImage(post.getUser().getPicture())
                         .build())
                 .collect(Collectors.toList());
     }
@@ -58,10 +68,11 @@ public class PostServiceImpl implements PostService{
                 .map(post -> PostResponseDto.builder()
                         .id(post.getId())
                         .pictureList(post.getPictureList())
+                        .content(post.getContent())
                         .likeCnt(post.getLikeCNT())
                         .userId(post.getUser().getId())
                         .username(post.getUser().getUsername())
-                        .picture(post.getUser().getPicture())
+                        .userImage(post.getUser().getPicture())
                         .build())
                 .collect(Collectors.toList());
     }
@@ -80,7 +91,7 @@ public class PostServiceImpl implements PostService{
 
         List<String> photos = s3Service.uploadS3(files);
 
-        postRepository.save(
+        Post post = postRepository.save(
                 Post.builder()
                         .pictureList(photos)
                         .content(postRequestDto.getContent())
@@ -95,10 +106,62 @@ public class PostServiceImpl implements PostService{
                         .gender(Gender.valueOf(postRequestDto.getGender()))
                         .build()
         );
+
+//        getWeather(post.getCreateDate(), post.getLatitude(), post.getLongitude());
     }
 
     @Override
     public void likePost(Long userId, Long postId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new BaseException("wrong userId"));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new BaseException("wrong postId"));
+        System.out.println("userId:" + user.getId());
+        System.out.println("postId:" + post.getId());
+
+        user.addPostLike(postId);
+        post.increaseLikeCNT();
+
+        userRepository.save(user);
+        postRepository.save(post);
+    }
+
+    @Override
+    public void cancelLikePost(Long userId, Long postId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new BaseException("wrong userId"));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new BaseException("wrong postId"));
+
+        user.cancelPostLike(postId);
+        post.decreaseLikeCNT();
+
+        userRepository.save(user);
+        postRepository.save(post);
+    }
+
+    private void getWeather(LocalDateTime localDateTime, double latitude, double longitude) {
+        try {
+            long epoch = localDateTime.atZone(ZoneId.of("Asia/Seoul")).toEpochSecond();
+
+            URL url = new URL("https://apihub.kma.go.kr/api/typ01/url/kma_sfctm2.php?tm=" + epoch + "&stn=1&authKey=M0At3_T7SteALd_0--rXPw");
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
+            con.setRequestProperty("Content-Type","application/json");
+            System.out.println("11");
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), "EUC-KR"));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+            System.out.println("22");
+
+            while ((inputLine = br.readLine()) != null) {
+                response.append(inputLine);
+                System.out.println(inputLine);
+            }
+
+            br.close();
+
+            System.out.println(response.toString());
+        } catch (IOException e) {
+            throw new BaseException("날씨를 불러오지 못하였습니다.");
+        }
 
     }
 

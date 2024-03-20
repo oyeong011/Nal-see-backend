@@ -33,8 +33,9 @@ public class CommentServiceImpl implements CommentService{
                         .id(comment.getId())
                         .content(comment.getContent())
                         .likeCNT(comment.getLikeCNT())
+                        .createDate(comment.getCreateDate())
                         .userId(comment.getUser().getId())
-                        .userPicture(comment.getUser().getPicture())
+                        .userImage(comment.getUser().getPicture())
                         .username(comment.getUser().getUsername())
                         .postId(comment.getPost().getId())
                         .build())
@@ -56,6 +57,25 @@ public class CommentServiceImpl implements CommentService{
 
     @Override
     public void likeComment(Long postId, Long commentId, Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new BaseException("wrong userId"));
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new BaseException("wrong commentId"));
 
+        user.addCommentLike(commentId);
+        comment.increaseLikeCNT();
+
+        userRepository.save(user);
+        commentRepository.save(comment);
+    }
+
+    @Override
+    public void cancelLikeComment(Long postId, Long commentId, Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new BaseException("wrong userId"));
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new BaseException("wrong commentId"));
+
+        user.cancelCommentLike(commentId);
+        comment.decreaseLikeCNT();
+
+        userRepository.save(user);
+        commentRepository.save(comment);
     }
 }

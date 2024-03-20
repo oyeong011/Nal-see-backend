@@ -75,4 +75,12 @@ public class Post extends BaseEntity {
         this.style = style;
         this.gender = gender;
     }
+
+    public void increaseLikeCNT() {
+        likeCNT++;
+    }
+
+    public void decreaseLikeCNT() {
+        likeCNT--;
+    }
 }

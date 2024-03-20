@@ -1,15 +1,15 @@
 package everycoding.nalseebackend.user;
 
+import everycoding.nalseebackend.api.exception.BaseException;
+import lombok.RequiredArgsConstructor;
+
 import everycoding.nalseebackend.auth.dto.request.SignupRequestDto;
 import everycoding.nalseebackend.auth.exception.EmailAlreadyUsedException;
 import everycoding.nalseebackend.user.domain.User;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Slf4j
 @Service
@@ -18,9 +18,19 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
-    public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+
+    public void followUser(Long userId, Long myId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new BaseException("wrong userId"));
+        User me = userRepository.findById(myId).orElseThrow(() -> new BaseException("wrong userId"));
+
+        me.follow(user);
+    }
+
+    public void unfollowUser(Long userId, Long myId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new BaseException("wrong userId"));
+        User me = userRepository.findById(myId).orElseThrow(() -> new BaseException("wrong userId"));
+
+        me.unfollow(user);
     }
 
     public User findByEmail(String email) {
@@ -44,5 +54,4 @@ public class UserService {
         log.info("회원가입 완료");
 
     }
-
 }

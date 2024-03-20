@@ -34,4 +34,12 @@ public class Comment extends BaseEntity {
         this.user = user;
         this.post = post;
     }
+
+    public void increaseLikeCNT() {
+        likeCNT++;
+    }
+
+    public void decreaseLikeCNT() {
+        likeCNT--;
+    }
 }
