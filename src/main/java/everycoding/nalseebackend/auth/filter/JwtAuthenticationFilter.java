@@ -15,6 +15,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -86,19 +87,31 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         log.info(refreshToken);
         ObjectMapper om = new ObjectMapper();
 
-        Cookie accessTokenCookie = new Cookie("AccessToken", accessToken);
-        accessTokenCookie.setHttpOnly(true);
-        accessTokenCookie.setPath("/");
-        accessTokenCookie.setMaxAge(60*60);
-        response.addCookie(accessTokenCookie);
+        //        Cookie accessTokenCookie = new Cookie("AccessToken", accessToken);
+//        accessTokenCookie.setHttpOnly(true);
+//        accessTokenCookie.setPath("/");
+//        accessTokenCookie.setMaxAge(60*60);
+//        // SameSite 속성을 쿠키 문자열에 직접 추가
+//        String accessTokenCookieString = "AccessToken=" + accessToken + "; Path=/; HttpOnly; Max-Age=3600; Secure = true; SameSite=None";
+//        response.addCookie(accessTokenCookie);
+//        response.addHeader("Set-Cookie", accessTokenCookieString);
+
+        ResponseCookie accessTokenCookie = ResponseCookie.from("AccessToken", accessToken)
+                .path("/").sameSite("None").httpOnly(false).secure(true).maxAge(60*60).build();
+        response.addHeader("Set-Cookie", accessTokenCookie.toString());
+
         log.info("AccessToken in Cookie={}", accessToken);
 
-        Cookie refreshTokenCookie = new Cookie("RefreshToken", refreshToken);
-        refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setPath("/");
-        refreshTokenCookie.setMaxAge(60 * 60 * 24 * 7);
-        response.addCookie(refreshTokenCookie);
-        log.info("RefreshToken in Cookie={}", refreshToken);
+//        Cookie refreshTokenCookie = new Cookie("RefreshToken", refreshToken);
+//        refreshTokenCookie.setHttpOnly(true);
+//        refreshTokenCookie.setPath("/");
+//        refreshTokenCookie.setMaxAge(60 * 60 * 24 * 7);
+//        String refreshTokenCookieString = "RefreshToken=" + refreshToken + "; Path=/; HttpOnly; Max-Age=" + (60 * 60 * 24 * 7) + "; Secure = true; SameSite=None";
+//        response.addHeader("Set-Cookie", refreshTokenCookieString);
+//        response.addCookie(refreshTokenCookie);
+        ResponseCookie refreshTokenCookie = ResponseCookie.from("RefreshToken", refreshToken)
+                .path("/").sameSite("None").httpOnly(false).secure(true).maxAge(60*60).build();
+        response.addHeader("Set-Cookie", refreshTokenCookie.toString());
 
         String role = authResult.getAuthorities().stream().map(GrantedAuthority::getAuthority).findAny().orElse("");
         String userEmail = "";

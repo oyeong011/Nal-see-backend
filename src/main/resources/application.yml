@@ -42,12 +42,23 @@ cloud:
     stack:
       auto: false
 
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+
 ---
 spring:
   config:
     activate:
       on-profile: dev
     import: application-secret.yml
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
 
 ---
 spring:
@@ -55,5 +66,10 @@ spring:
     activate:
       on-profile: prod
     import: application-prod.yml
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
 
 ---

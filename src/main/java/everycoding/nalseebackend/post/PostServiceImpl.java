@@ -107,16 +107,21 @@ public class PostServiceImpl implements PostService{
                         .build()
         );
 
-        getWeather(post.getCreateDate(), post.getLatitude(), post.getLongitude());
+//        getWeather(post.getCreateDate(), post.getLatitude(), post.getLongitude());
     }
 
     @Override
     public void likePost(Long userId, Long postId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new BaseException("wrong userId"));
         Post post = postRepository.findById(postId).orElseThrow(() -> new BaseException("wrong postId"));
+        System.out.println("userId:" + user.getId());
+        System.out.println("postId:" + post.getId());
 
         user.addPostLike(postId);
         post.increaseLikeCNT();
+
+        userRepository.save(user);
+        postRepository.save(post);
     }
 
     @Override
@@ -126,6 +131,9 @@ public class PostServiceImpl implements PostService{
 
         user.cancelPostLike(postId);
         post.decreaseLikeCNT();
+
+        userRepository.save(user);
+        postRepository.save(post);
     }
 
     private void getWeather(LocalDateTime localDateTime, double latitude, double longitude) {

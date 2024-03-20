@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -42,11 +43,15 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
                 userService.clearRefreshToken(email);
             }
 
-            Cookie cookie = new Cookie("RefreshToken", null);
-            cookie.setPath("/");
-            cookie.setMaxAge(0);
-            cookie.setHttpOnly(true);
-            response.addCookie(cookie);
+        ResponseCookie refreshTokenCookie = ResponseCookie.from("RefreshToken", null)
+                .path("/").sameSite("None").httpOnly(false).secure(true).maxAge(0).build();
+        response.addHeader("Set-Cookie", refreshTokenCookie.toString());
+
+//            Cookie cookie = new Cookie("RefreshToken", null);
+//            cookie.setPath("/");
+//            cookie.setMaxAge(0);
+//            cookie.setHttpOnly(true);
+//            response.addCookie(cookie);
 
             log.info("Success logout");
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);

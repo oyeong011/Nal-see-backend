@@ -16,3 +16,9 @@ cloud:
     credentials:
       access-key: ${AWS_ACCESS_KEY}
       secret-key: ${AWS_SECRET_KEY}
+server:
+  ssl:
+    key-store: ${SSL_PATH}
+    key-store-password: ${SSL_PASSWORD}
+    key-store-type: PKCS12
+    key-alias: spring
