@@ -17,7 +17,6 @@ cloud:
       access-key: ${AWS_ACCESS_KEY}
       secret-key: ${AWS_SECRET_KEY}
 server:
-  port: 443
   ssl:
     key-store: ${SSL_PATH}
     key-store-password: ${SSL_PASSWORD}

@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -110,11 +111,11 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     }
 
     private void addCookie(HttpServletResponse response, String cookieName, String cookieValue, int maxAge) {
-        Cookie cookie = new Cookie( cookieName, cookieValue);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        cookie.setMaxAge(maxAge);
-        response.addCookie(cookie);
+
+        ResponseCookie cookie = ResponseCookie.from(cookieName, cookieValue)
+                .path("/").sameSite("None").httpOnly(false).secure(true).maxAge(maxAge).build();
+        response.addHeader("Set-Cookie", cookie.toString());
+
     }
 
     private void deleteCookie(HttpServletResponse response, String cookieName) throws IOException{

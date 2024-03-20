@@ -21,6 +21,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.*;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -106,18 +107,32 @@ public class SecurityConfig {
         log.info(refreshToken);
         ObjectMapper om = new ObjectMapper();
 
-        Cookie accessTokenCookie = new Cookie("AccessToken", accessToken);
-        accessTokenCookie.setHttpOnly(true);
-        accessTokenCookie.setPath("/");
-        accessTokenCookie.setMaxAge(60*60);
-        response.addCookie(accessTokenCookie);
+//        Cookie accessTokenCookie = new Cookie("AccessToken", accessToken);
+//        accessTokenCookie.setHttpOnly(true);
+//        accessTokenCookie.setPath("/");
+//        accessTokenCookie.setMaxAge(60*60);
+//        // SameSite 속성을 쿠키 문자열에 직접 추가
+//        String accessTokenCookieString = "AccessToken=" + accessToken + "; Path=/; HttpOnly; Max-Age=3600; Secure = true; SameSite=None";
+//        response.addCookie(accessTokenCookie);
+//        response.addHeader("Set-Cookie", accessTokenCookieString);
+
+        ResponseCookie accessTokenCookie = ResponseCookie.from("AccessToken", accessToken)
+                        .path("/").sameSite("None").httpOnly(false).secure(true).maxAge(60*60).build();
+        response.addHeader("Set-Cookie", accessTokenCookie.toString());
+
         log.info("AccessToken in Cookie={}", accessToken);
 
-        Cookie refreshTokenCookie = new Cookie("RefreshToken", refreshToken);
-        refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setPath("/");
-        refreshTokenCookie.setMaxAge(60 * 60 * 24 * 7);
-        response.addCookie(refreshTokenCookie);
+//        Cookie refreshTokenCookie = new Cookie("RefreshToken", refreshToken);
+//        refreshTokenCookie.setHttpOnly(true);
+//        refreshTokenCookie.setPath("/");
+//        refreshTokenCookie.setMaxAge(60 * 60 * 24 * 7);
+//        String refreshTokenCookieString = "RefreshToken=" + refreshToken + "; Path=/; HttpOnly; Max-Age=" + (60 * 60 * 24 * 7) + "; Secure = true; SameSite=None";
+//        response.addHeader("Set-Cookie", refreshTokenCookieString);
+//        response.addCookie(refreshTokenCookie);
+        ResponseCookie refreshTokenCookie = ResponseCookie.from("RefreshToken", refreshToken)
+                .path("/").sameSite("None").httpOnly(false).secure(true).maxAge(60*60).build();
+        response.addHeader("Set-Cookie", refreshTokenCookie.toString());
+
         log.info("RefreshToken in Cookie={}", refreshToken);
 
         String role = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).findAny().orElse("");
@@ -138,7 +153,7 @@ public class SecurityConfig {
         response.getWriter().write(result); //body
 //        response.sendRedirect("http://localhost:5173/oauth2/redirect");
 //        response.sendRedirect("https://k547f55f71a44a.user-app.krampoline.com/oauth2/redirect/?token="+token);
-        response.sendRedirect("http://localhost:5173");
+        response.sendRedirect("https://do935ibb4yty7.cloudfront.net");
     }
 
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
@@ -162,7 +177,7 @@ public class SecurityConfig {
         corsConfiguration.setAllowCredentials(true);
 
 //      corsConfiguration.setAllowedOrigins(List.of("http://localhost:5173", "https://ide-frontend-wheat.vercel.app/login", "https://ide-frontend-six.vercel.app", "https://ide-frontend-wheat.vercel.app"));
-        corsConfiguration.setAllowedOrigins(List.of("http://localhost:5173"));
+        corsConfiguration.setAllowedOrigins(List.of("http://localhost:5173", "https://do935ibb4yty7.cloudfront.net","https://nalsee.site"));
         corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"));
         corsConfiguration.setAllowCredentials(true);
 
@@ -170,5 +185,4 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", corsConfiguration);
         return source;
     }
-
 }
