@@ -29,19 +29,19 @@ public class Post extends BaseEntity {
 
     private String content;
 
-    private Integer likeCNT;
+    private int likeCNT;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    private Weather weather;
-
     @OneToMany(mappedBy = "post")
     private List<Comment> comments;
 
-    private Double longitude;
-    private Double latitude;
+    private double longitude;
+    private double latitude;
+
+    private String weather;
+    private double temperature;
 
     private Integer height;
     private Integer weight;
@@ -54,18 +54,19 @@ public class Post extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    private String link;
-    private String brand;
-    private String productName;
+//    private String link;
+//    private String brand;
+//    private String productName;
 
     @Builder
-    public Post(List<String> pictureList, String content, User user, Weather weather, Double longitude, Double latitude, Integer height, Integer weight, String bodyShape, String constitution, FashionStyle style, Gender gender) {
+    public Post(List<String> pictureList, String content, User user, String weather, double temperature, double longitude, double latitude, int height, int weight, String bodyShape, String constitution, FashionStyle style, Gender gender) {
         this.pictureList = pictureList;
         this.content = content;
         likeCNT = 0;
         this.user = user;
-        this.weather = weather;
         comments = new ArrayList<>();
+        this.weather = weather;
+        this.temperature = temperature;
         this.longitude = longitude;
         this.latitude = latitude;
         this.height = height;

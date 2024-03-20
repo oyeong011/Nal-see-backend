@@ -9,6 +9,7 @@ import everycoding.nalseebackend.user.UserRepository;
 import everycoding.nalseebackend.user.domain.FashionStyle;
 import everycoding.nalseebackend.user.domain.Gender;
 import everycoding.nalseebackend.user.domain.User;
+import everycoding.nalseebackend.weather.dto.WeatherResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,18 +17,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,6 +33,7 @@ public class PostServiceImpl implements PostService{
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final S3Service s3Service;
+    private final RestTemplate restTemplate;
 
     @Override
     public List<PostResponseDto> getPosts(Long lastPostId, int size) {
@@ -91,11 +86,15 @@ public class PostServiceImpl implements PostService{
 
         List<String> photos = s3Service.uploadS3(files);
 
-        Post post = postRepository.save(
+        WeatherResponseDto weatherResponseDto = getWeather(postRequestDto.getLatitude(), postRequestDto.getLongitude());
+
+        postRepository.save(
                 Post.builder()
                         .pictureList(photos)
                         .content(postRequestDto.getContent())
                         .user(user)
+                        .weather(weatherResponseDto.getWeather().getFirst().getMain())
+                        .temperature(Math.ceil((weatherResponseDto.getMain().getTemp()- 273.15)*10)/10.0)
                         .latitude(postRequestDto.getLatitude())
                         .longitude(postRequestDto.getLongitude())
                         .height(postRequestDto.getHeight())
@@ -106,8 +105,6 @@ public class PostServiceImpl implements PostService{
                         .gender(Gender.valueOf(postRequestDto.getGender()))
                         .build()
         );
-
-//        getWeather(post.getCreateDate(), post.getLatitude(), post.getLongitude());
     }
 
     @Override
@@ -136,34 +133,8 @@ public class PostServiceImpl implements PostService{
         postRepository.save(post);
     }
 
-    private void getWeather(LocalDateTime localDateTime, double latitude, double longitude) {
-        try {
-            long epoch = localDateTime.atZone(ZoneId.of("Asia/Seoul")).toEpochSecond();
-
-            URL url = new URL("https://apihub.kma.go.kr/api/typ01/url/kma_sfctm2.php?tm=" + epoch + "&stn=1&authKey=M0At3_T7SteALd_0--rXPw");
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("GET");
-            con.setRequestProperty("Content-Type","application/json");
-            System.out.println("11");
-
-            BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), "EUC-KR"));
-            String inputLine;
-            StringBuffer response = new StringBuffer();
-            System.out.println("22");
-
-            while ((inputLine = br.readLine()) != null) {
-                response.append(inputLine);
-                System.out.println(inputLine);
-            }
-
-            br.close();
-
-            System.out.println(response.toString());
-        } catch (IOException e) {
-            throw new BaseException("날씨를 불러오지 못하였습니다.");
-        }
-
+    private WeatherResponseDto getWeather(double latitude, double longitude) {
+        String url = "https://api.openweathermap.org/data/2.5/weather?lat=" + latitude + "&lon=" + longitude + "&appid=7b9d8977d2c3d10d5ae6e4b4b4907c10";
+        return restTemplate.getForObject(url, WeatherResponseDto.class);
     }
-
-
 }
