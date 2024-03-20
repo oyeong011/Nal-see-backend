@@ -17,20 +17,26 @@ public class PostResponseDto {
     private boolean isLiked;
     private LocalDateTime createDate;
 
+    private String address;
+
+    private String weather;
+    private double temperature;
+
     private Long userId;
     private String username;
     private String userImage;
 
-    //TODO 장소정보, 날씨정보
-
     @Builder
-    public PostResponseDto(java.lang.Long id, List<String> pictureList, String content, int likeCnt, boolean isLiked, LocalDateTime createDate, java.lang.Long userId, String username, String userImage) {
+    public PostResponseDto(Long id, List<String> pictureList, String content, int likeCnt, boolean isLiked, LocalDateTime createDate, String address, String weather, double temperature, Long userId, String username, String userImage) {
         this.id = id;
         this.pictureList = pictureList;
         this.content = content;
         this.likeCnt = likeCnt;
         this.isLiked = isLiked;
         this.createDate = createDate;
+        this.address = address;
+        this.weather = weather;
+        this.temperature = temperature;
         this.userId = userId;
         this.username = username;
         this.userImage = userImage;
