@@ -1,6 +1,7 @@
 package everycoding.nalseebackend.post;
 
 import everycoding.nalseebackend.post.domain.Post;
+import everycoding.nalseebackend.user.domain.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,6 +15,8 @@ import java.util.List;
 public interface PostRepository extends JpaRepository<Post, Long>, JpaSpecificationExecutor<Post> {
 
     Page<Post> findByIdLessThan(Long lastPostId, Pageable pageable);
+
+    Page<Post> findByUserAndIdLessThan(User user, Long lastPostId, Pageable pageable);
 
     @Query("SELECT p FROM Post p " +
             "WHERE p.latitude >= :bottomLeftLat AND p.latitude <= :topRightLat " +
