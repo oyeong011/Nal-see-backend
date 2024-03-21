@@ -10,6 +10,7 @@ import everycoding.nalseebackend.user.domain.Constitution;
 import everycoding.nalseebackend.user.domain.FashionStyle;
 import everycoding.nalseebackend.user.domain.Gender;
 import everycoding.nalseebackend.user.domain.User;
+import everycoding.nalseebackend.user.dto.UserInfoResponseDto;
 import everycoding.nalseebackend.weather.dto.WeatherResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -145,12 +146,6 @@ public class PostServiceImpl implements PostService{
                         .address(postRequestDto.getAddress())
                         .latitude(postRequestDto.getLatitude())
                         .longitude(postRequestDto.getLongitude())
-                        .height(postRequestDto.getHeight())
-                        .weight(postRequestDto.getWeight())
-                        .bodyShape(postRequestDto.getBodyShape())
-                        .constitution(Constitution.valueOf(postRequestDto.getConstitution()))
-                        .style(FashionStyle.valueOf(postRequestDto.getStyle()))
-                        .gender(Gender.valueOf(postRequestDto.getGender()))
                         .build()
         );
     }

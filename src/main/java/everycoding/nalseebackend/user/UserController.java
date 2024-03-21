@@ -2,12 +2,11 @@ package everycoding.nalseebackend.user;
 
 import everycoding.nalseebackend.api.ApiResponse;
 import everycoding.nalseebackend.auth.customUser.CustomUserDetails;
+import everycoding.nalseebackend.user.dto.UserInfoRequestDto;
+import everycoding.nalseebackend.user.dto.UserInfoResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,6 +29,20 @@ public class UserController {
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
         userService.unfollowUser(userId, customUserDetails.getId());
+        return ApiResponse.ok();
+    }
+
+    @GetMapping("/api/users/userInfo")
+    public ApiResponse<UserInfoResponseDto> getUserInfo(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return ApiResponse.ok(userService.getUserInfo(customUserDetails.getId()));
+    }
+
+    @PostMapping("/api/users/userInfo")
+    public ApiResponse<Void> setUserInfo(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestBody UserInfoRequestDto requestDto
+            ) {
+        userService.setUserInfo(customUserDetails.getId(), requestDto);
         return ApiResponse.ok();
     }
 }

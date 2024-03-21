@@ -4,6 +4,7 @@ import everycoding.nalseebackend.api.ApiResponse;
 import everycoding.nalseebackend.auth.customUser.CustomUserDetails;
 import everycoding.nalseebackend.post.dto.PostResponseDto;
 import everycoding.nalseebackend.post.dto.PostRequestDto;
+import everycoding.nalseebackend.user.dto.UserInfoResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
