@@ -6,10 +6,7 @@ import everycoding.nalseebackend.post.domain.Post;
 import everycoding.nalseebackend.post.dto.PostRequestDto;
 import everycoding.nalseebackend.post.dto.PostResponseDto;
 import everycoding.nalseebackend.user.UserRepository;
-import everycoding.nalseebackend.user.domain.Constitution;
-import everycoding.nalseebackend.user.domain.FashionStyle;
-import everycoding.nalseebackend.user.domain.Gender;
-import everycoding.nalseebackend.user.domain.User;
+import everycoding.nalseebackend.user.domain.*;
 import everycoding.nalseebackend.user.dto.UserInfoResponseDto;
 import everycoding.nalseebackend.weather.Weather;
 import everycoding.nalseebackend.weather.dto.WeatherResponseDto;
@@ -149,16 +146,25 @@ public class PostServiceImpl implements PostService{
 
         WeatherResponseDto weatherResponseDto = getWeather(postRequestDto.getLatitude(), postRequestDto.getLongitude());
 
+        UserInfo userInfo = UserInfo.builder()
+                .height(postRequestDto.getHeight())
+                .weight(postRequestDto.getWeight())
+                .constitution(postRequestDto.getConstitution())
+                .style(postRequestDto.getStyle())
+                .gender(postRequestDto.getGender())
+                .build();
+
         postRepository.save(
                 Post.builder()
                         .pictureList(photos)
                         .content(postRequestDto.getContent())
                         .user(user)
                         .weather(Weather.valueOf(weatherResponseDto.getWeather().get(0).getMain()))
-                        .temperature(Math.ceil((weatherResponseDto.getMain().getTemp()- 273.15)*10)/10.0)
+                        .temperature(Math.ceil((weatherResponseDto.getMain().getTemp() - 273.15) * 10) / 10.0)
                         .address(postRequestDto.getAddress())
                         .latitude(postRequestDto.getLatitude())
                         .longitude(postRequestDto.getLongitude())
+                        .userInfo(userInfo)
                         .build()
         );
     }

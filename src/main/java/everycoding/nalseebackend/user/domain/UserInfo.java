@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserInfo {
 
-    private double height;
-    private double weight;
+    private Double height;
+    private Double weight;
     @Enumerated(EnumType.STRING)
     private Constitution constitution;
     @Enumerated(EnumType.STRING)
@@ -20,7 +20,7 @@ public class UserInfo {
     private Gender gender;
 
     @Builder
-    public UserInfo(double height, double weight, Constitution constitution, FashionStyle style, Gender gender) {
+    public UserInfo(Double height, Double weight, Constitution constitution, FashionStyle style, Gender gender) {
         this.height = height;
         this.weight = weight;
         this.constitution = constitution;

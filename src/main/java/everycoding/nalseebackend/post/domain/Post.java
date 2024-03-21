@@ -52,7 +52,7 @@ public class Post extends BaseEntity {
 //    private String productName;
 
     @Builder
-    public Post(List<String> pictureList, String content, User user, Weather weather, double temperature, String address, double longitude, double latitude) {
+    public Post(List<String> pictureList, String content, User user, Weather weather, double temperature, String address, double longitude, double latitude, UserInfo userInfo) {
         this.pictureList = pictureList;
         this.content = content;
         likeCNT = 0;
@@ -63,6 +63,7 @@ public class Post extends BaseEntity {
         this.address = address;
         this.longitude = longitude;
         this.latitude = latitude;
+        this.userInfo = userInfo;
     }
 
     public void increaseLikeCNT() {
