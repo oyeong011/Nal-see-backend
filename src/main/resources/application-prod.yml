@@ -11,11 +11,13 @@ spring:
             client-id: ${OAUTH_KAKAO_ID}
             client-secret: ${OAUTH_KAKAO_SECRET}
             redirect-uri: ${OAUTH_KAKAO_URI}
+
 cloud:
    aws:
     credentials:
       access-key: ${AWS_ACCESS_KEY}
       secret-key: ${AWS_SECRET_KEY}
+
 server:
   ssl:
     key-store: ${SSL_PATH}

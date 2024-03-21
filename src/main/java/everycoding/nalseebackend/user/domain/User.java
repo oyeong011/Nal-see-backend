@@ -62,8 +62,9 @@ public class User extends BaseEntity {
     @ManyToMany
     private Set<User> followers = new HashSet<>();
 
-    @OneToOne(fetch = FetchType.LAZY)
-    private UserINF userINF;
+    @Setter
+    @Embedded
+    private UserInfo userInfo;
 
     @OneToMany(mappedBy = "user")
     private List<Post> posts;

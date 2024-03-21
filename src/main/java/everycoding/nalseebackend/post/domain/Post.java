@@ -2,14 +2,13 @@ package everycoding.nalseebackend.post.domain;
 
 import everycoding.nalseebackend.BaseEntity;
 import everycoding.nalseebackend.comment.domain.Comment;
-import everycoding.nalseebackend.user.domain.FashionStyle;
-import everycoding.nalseebackend.user.domain.Gender;
-import everycoding.nalseebackend.user.domain.User;
-import everycoding.nalseebackend.weather.domain.Weather;
+import everycoding.nalseebackend.user.domain.*;
+import everycoding.nalseebackend.weather.Weather;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,51 +28,42 @@ public class Post extends BaseEntity {
 
     private String content;
 
-    private Integer likeCNT;
+    private int likeCNT;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    private Weather weather;
-
     @OneToMany(mappedBy = "post")
     private List<Comment> comments;
 
-    private Double longitude;
-    private Double latitude;
+    private String address;
+    private double longitude;
+    private double latitude;
 
-    private Integer height;
-    private Integer weight;
-    private String bodyShape;
-    private String constitution;
+    private Weather weather;
+    private double temperature;
 
-    @Enumerated(EnumType.STRING)
-    private FashionStyle style;
+    @Setter
+    @Embedded
+    private UserInfo userInfo;
 
-    @Enumerated(EnumType.STRING)
-    private Gender gender;
-
-    private String link;
-    private String brand;
-    private String productName;
+//    private String link;
+//    private String brand;
+//    private String productName;
 
     @Builder
-    public Post(List<String> pictureList, String content, User user, Weather weather, Double longitude, Double latitude, Integer height, Integer weight, String bodyShape, String constitution, FashionStyle style, Gender gender) {
+    public Post(List<String> pictureList, String content, User user, Weather weather, double temperature, String address, double longitude, double latitude, UserInfo userInfo) {
         this.pictureList = pictureList;
         this.content = content;
         likeCNT = 0;
         this.user = user;
-        this.weather = weather;
         comments = new ArrayList<>();
+        this.weather = weather;
+        this.temperature = temperature;
+        this.address = address;
         this.longitude = longitude;
         this.latitude = latitude;
-        this.height = height;
-        this.weight = weight;
-        this.bodyShape = bodyShape;
-        this.constitution = constitution;
-        this.style = style;
-        this.gender = gender;
+        this.userInfo = userInfo;
     }
 
     public void increaseLikeCNT() {

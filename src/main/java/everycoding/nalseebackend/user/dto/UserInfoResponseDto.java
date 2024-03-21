@@ -1,25 +1,18 @@
-package everycoding.nalseebackend.post.dto;
+package everycoding.nalseebackend.user.dto;
 
 import everycoding.nalseebackend.user.domain.Constitution;
 import everycoding.nalseebackend.user.domain.FashionStyle;
 import everycoding.nalseebackend.user.domain.Gender;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class PostRequestDto {
-
-    private Long userId;
-
-    private String content;
-
-    private String address;
-    private Double latitude;
-    private Double longitude;
-
-    private Double height;
-    private Double weight;
-    private String bodyShape;
+@Builder
+public class UserInfoResponseDto {
+    private double height;
+    private double weight;
     private Constitution constitution;
     private FashionStyle style;
     private Gender gender;
+
 }

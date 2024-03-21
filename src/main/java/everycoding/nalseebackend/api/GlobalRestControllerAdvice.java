@@ -15,7 +15,6 @@ public class GlobalRestControllerAdvice {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public ApiResponse<String> handleException(Exception e) {
-        e.printStackTrace();
         log.error("Exception catched in RestControllerAdvice : {}",e.getMessage());
         return ApiResponse.fail(e.getMessage());
     }
