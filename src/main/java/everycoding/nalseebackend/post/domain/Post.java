@@ -3,6 +3,7 @@ package everycoding.nalseebackend.post.domain;
 import everycoding.nalseebackend.BaseEntity;
 import everycoding.nalseebackend.comment.domain.Comment;
 import everycoding.nalseebackend.user.domain.*;
+import everycoding.nalseebackend.weather.Weather;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -39,7 +40,7 @@ public class Post extends BaseEntity {
     private double longitude;
     private double latitude;
 
-    private String weather;
+    private Weather weather;
     private double temperature;
 
     @Setter
@@ -51,7 +52,7 @@ public class Post extends BaseEntity {
 //    private String productName;
 
     @Builder
-    public Post(List<String> pictureList, String content, User user, String weather, double temperature, String address, double longitude, double latitude) {
+    public Post(List<String> pictureList, String content, User user, Weather weather, double temperature, String address, double longitude, double latitude) {
         this.pictureList = pictureList;
         this.content = content;
         likeCNT = 0;
