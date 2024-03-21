@@ -36,6 +36,7 @@ public class PostController {
         return ApiResponse.ok(postService.getPostsInLocation(bottomLeftLat, bottomLeftLong, topRightLat, topRightLong));
     }
 
+    // 상세 페이지 조회
     @GetMapping("/api/posts/{postId}")
     public ApiResponse<PostResponseDto> getPost(@PathVariable Long postId) {
         return ApiResponse.ok(postService.getPost(postId));

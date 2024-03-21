@@ -85,7 +85,19 @@ public class PostServiceImpl implements PostService{
 
     @Override
     public PostResponseDto getPost(Long postId) {
-        return null;
+        Post post = postRepository.findById(postId).orElseThrow(() -> new BaseException("wrong postId"));
+        return PostResponseDto.builder()
+                .id(post.getId())
+                .pictureList(post.getPictureList())
+                .content(post.getContent())
+                .likeCnt(post.getLikeCNT())
+                .address(post.getAddress())
+                .weather(post.getWeather())
+                .temperature(post.getTemperature())
+                .userId(post.getUser().getId())
+                .username(post.getUser().getUsername())
+                .userImage(post.getUser().getPicture())
+                .build();
     }
 
     @Override
