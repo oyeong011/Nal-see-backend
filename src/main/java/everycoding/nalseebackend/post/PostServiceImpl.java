@@ -11,6 +11,7 @@ import everycoding.nalseebackend.user.domain.FashionStyle;
 import everycoding.nalseebackend.user.domain.Gender;
 import everycoding.nalseebackend.user.domain.User;
 import everycoding.nalseebackend.user.dto.UserInfoResponseDto;
+import everycoding.nalseebackend.weather.Weather;
 import everycoding.nalseebackend.weather.dto.WeatherResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -141,7 +142,7 @@ public class PostServiceImpl implements PostService{
                         .pictureList(photos)
                         .content(postRequestDto.getContent())
                         .user(user)
-                        .weather(weatherResponseDto.getWeather().get(0).getMain())
+                        .weather(Weather.valueOf(weatherResponseDto.getWeather().get(0).getMain()))
                         .temperature(Math.ceil((weatherResponseDto.getMain().getTemp()- 273.15)*10)/10.0)
                         .address(postRequestDto.getAddress())
                         .latitude(postRequestDto.getLatitude())
