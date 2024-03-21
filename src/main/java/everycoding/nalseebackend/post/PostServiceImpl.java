@@ -151,13 +151,12 @@ public class PostServiceImpl implements PostService{
         List<String> photos = s3Service.uploadS3(files);
 
         WeatherResponseDto weatherResponseDto = getWeather(postRequestDto.getLatitude(), postRequestDto.getLongitude());
-
         UserInfo userInfo = UserInfo.builder()
-                .height(postRequestDto.getHeight())
-                .weight(postRequestDto.getWeight())
-                .constitution(postRequestDto.getConstitution())
-                .style(postRequestDto.getStyle())
-                .gender(postRequestDto.getGender())
+                .height(postRequestDto.getUserInfo().getHeight())
+                .weight(postRequestDto.getUserInfo().getWeight())
+                .constitution(postRequestDto.getUserInfo().getConstitution())
+                .style(postRequestDto.getUserInfo().getStyle())
+                .gender(postRequestDto.getUserInfo().getGender())
                 .build();
 
         postRepository.save(
@@ -173,6 +172,48 @@ public class PostServiceImpl implements PostService{
                         .userInfo(userInfo)
                         .build()
         );
+    }
+
+    @Override
+    public void updatePost(Long userId, Long postId, PostRequestDto postRequestDto, HttpServletRequest request) throws IOException {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new BaseException("wrong postId"));
+
+        if (!post.getUser().getId().equals(userId)) {
+            throw new BaseException("수정할 수 있는 권한이 없습니다.");
+        }
+
+        if (request instanceof MultipartHttpServletRequest multipartHttpServletRequest) {
+            List<MultipartFile> files = multipartHttpServletRequest.getFiles("photos");
+
+            if (!files.isEmpty()) {
+                post.getPictureList().forEach(s3Service::deleteS3);
+                List<String> photos = s3Service.uploadS3(files);
+                post.setPictureList(photos);
+            }
+        }
+
+        if (postRequestDto.getContent() != null) {
+            post.setContent(postRequestDto.getContent());
+        }
+        if (postRequestDto.getAddress() != null) {
+            post.setAddress(postRequestDto.getAddress());
+        }
+        if (postRequestDto.getLatitude() != null) {
+            post.setLatitude(postRequestDto.getLatitude());
+            post.setLongitude(postRequestDto.getLongitude());
+        }
+
+        postRepository.save(post);
+    }
+
+    @Override
+    public void deletePost(Long userId, Long postId) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new BaseException("wrong postId"));
+        if (!post.getUser().getId().equals(userId)) {
+            throw new BaseException("삭제할 수 있는 권한이 없습니다.");
+        }
+        post.getPictureList().forEach(s3Service::deleteS3);
+        postRepository.delete(post);
     }
 
     @Override

@@ -23,9 +23,11 @@ public class Post extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter
     @ElementCollection
     private List<String> pictureList;
 
+    @Setter
     private String content;
 
     private int likeCNT;
@@ -36,8 +38,11 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post")
     private List<Comment> comments;
 
+    @Setter
     private String address;
+    @Setter
     private double longitude;
+    @Setter
     private double latitude;
 
     private Weather weather;
