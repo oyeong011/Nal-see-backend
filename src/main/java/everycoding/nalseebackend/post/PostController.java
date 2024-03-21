@@ -75,6 +75,23 @@ public class PostController {
         return ApiResponse.ok();
     }
 
+    // 게시물 수정
+    @PatchMapping(value = "/api/posts/{postId}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ApiResponse<Void> updatePost(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable Long postId, @RequestPart PostRequestDto requestDto, HttpServletRequest request) throws IOException {
+        postService.updatePost(customUserDetails.getId(), postId, requestDto, request);
+        return ApiResponse.ok();
+    }
+
+    //게시물 삭제
+    @DeleteMapping("/api/posts/{postId}")
+    public ApiResponse<Void> deletePost(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @PathVariable Long postId
+    ) {
+        postService.deletePost(customUserDetails.getId(), postId);
+        return ApiResponse.ok();
+    }
+
     // 게시물 좋아요
     @PostMapping("/api/posts/{postId}/likes")
     public ApiResponse<Void> likePost(@AuthenticationPrincipal CustomUserDetails customUserDetails,@PathVariable Long postId) {

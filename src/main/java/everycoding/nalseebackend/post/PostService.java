@@ -21,6 +21,10 @@ public interface PostService {
 
     void post(PostRequestDto postRequestDto, HttpServletRequest request) throws IOException;
 
+    void updatePost(Long userId, Long postId, PostRequestDto postRequestDto, HttpServletRequest request) throws IOException;
+
+    void deletePost(Long userId, Long postId);
+
     void likePost(Long userId, Long postId);
 
     void cancelLikePost(Long userId, Long postId);

@@ -50,6 +50,12 @@ public class S3Service {
         return amazonS3.getUrl(bucket, key).toString();
     }
 
+    public void deleteS3(String url) {
+        String key = "post-photos/"+url.substring(url.lastIndexOf('/')+1);
+        System.out.println(key);
+        amazonS3.deleteObject(bucket, key);
+    }
+
     private Optional<File> convertMultipartFileToFile(MultipartFile multipartFile) throws IOException {
         File file = new File(System.getProperty("user.dir") + "/" + multipartFile.getOriginalFilename());
 
