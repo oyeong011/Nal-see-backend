@@ -38,7 +38,7 @@ public class PostServiceImpl implements PostService{
     private final PostSpecification postSpecification;
 
     @Override
-    public List<PostResponseDto> getPosts(Long lastPostId, int size) {
+    public List<PostResponseDto> getPosts(Long userId, Long lastPostId, int size) {
         Pageable pageable = PageRequest.of(0, size, Sort.by("id").descending());
         return postRepository.findByIdLessThan(lastPostId, pageable)
                 .stream()
@@ -47,29 +47,8 @@ public class PostServiceImpl implements PostService{
                         .pictureList(post.getPictureList())
                         .content(post.getContent())
                         .likeCnt(post.getLikeCNT())
+                        .isLiked(isLiked(userId, post.getId()))
                         .createDate(post.getCreateDate())
-                        .address(post.getAddress())
-                        .weather(post.getWeather())
-                        .temperature(post.getTemperature())
-                        .userId(post.getUser().getId())
-                        .userImage(post.getUser().getPicture())
-                        .build())
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<PostResponseDto> getPostsInLocation(
-            double bottomLeftLat, double bottomLeftLong,
-            double topRightLat, double topRightLong
-    ) {
-        List<Post> posts = postRepository.findByLocationWithin(bottomLeftLat, bottomLeftLong, topRightLat, topRightLong);
-
-        return posts.stream()
-                .map(post -> PostResponseDto.builder()
-                        .id(post.getId())
-                        .pictureList(post.getPictureList())
-                        .content(post.getContent())
-                        .likeCnt(post.getLikeCNT())
                         .address(post.getAddress())
                         .weather(post.getWeather())
                         .temperature(post.getTemperature())
@@ -81,13 +60,40 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public PostResponseDto getPost(Long postId) {
+    public List<PostResponseDto> getPostsInLocation(
+            Long userId,
+            double bottomLeftLat, double bottomLeftLong,
+            double topRightLat, double topRightLong
+    ) {
+        List<Post> posts = postRepository.findByLocationWithin(bottomLeftLat, bottomLeftLong, topRightLat, topRightLong);
+
+        return posts.stream()
+                .map(post -> PostResponseDto.builder()
+                        .id(post.getId())
+                        .pictureList(post.getPictureList())
+                        .content(post.getContent())
+                        .likeCnt(post.getLikeCNT())
+                        .isLiked(isLiked(userId, post.getId()))
+                        .createDate(post.getCreateDate())
+                        .address(post.getAddress())
+                        .weather(post.getWeather())
+                        .temperature(post.getTemperature())
+                        .userId(post.getUser().getId())
+                        .username(post.getUser().getUsername())
+                        .userImage(post.getUser().getPicture())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public PostResponseDto getPost(Long userId, Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new BaseException("wrong postId"));
         return PostResponseDto.builder()
                 .id(post.getId())
                 .pictureList(post.getPictureList())
                 .content(post.getContent())
                 .likeCnt(post.getLikeCNT())
+                .isLiked(isLiked(userId, postId))
                 .address(post.getAddress())
                 .weather(post.getWeather())
                 .temperature(post.getTemperature())
@@ -98,7 +104,7 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public List<PostResponseDto> searchPosts(List<String> weathers, Double minTemperature, Double maxTemperature, Double minHeight, Double maxHeight,
+    public List<PostResponseDto> searchPosts(Long userId, List<String> weathers, Double minTemperature, Double maxTemperature, Double minHeight, Double maxHeight,
                                              Double minWeight, Double maxWeight, String constitution, List<String> styles, String gender) {
         Specification<Post> spec = Specification.where(null);
 
@@ -198,5 +204,10 @@ public class PostServiceImpl implements PostService{
     private WeatherResponseDto getWeather(double latitude, double longitude) {
         String url = "https://api.openweathermap.org/data/2.5/weather?lat=" + latitude + "&lon=" + longitude + "&appid=7b9d8977d2c3d10d5ae6e4b4b4907c10";
         return restTemplate.getForObject(url, WeatherResponseDto.class);
+    }
+
+    private boolean isLiked(long userId, long postId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new BaseException("wrong userId"));
+        return user.getPostLikeList().contains(postId);
     }
 }

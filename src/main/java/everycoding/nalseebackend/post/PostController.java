@@ -24,27 +24,36 @@ public class PostController {
 
     // 기본 조회
     @GetMapping("/api/posts")
-    public ApiResponse<List<PostResponseDto>> getPosts(@RequestParam Long lastPostId, @RequestParam int size) {
-        return ApiResponse.ok(postService.getPosts(lastPostId, size));
+    public ApiResponse<List<PostResponseDto>> getPosts(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestParam Long lastPostId,
+            @RequestParam int size
+    ) {
+        return ApiResponse.ok(postService.getPosts(customUserDetails.getId(), lastPostId, size));
     }
 
     // 지도 기준 조회
     @GetMapping("/api/posts/location")
     public ApiResponse<List<PostResponseDto>> getPostsInLocation(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestParam double bottomLeftLat, @RequestParam double bottomLeftLong,
             @RequestParam double topRightLat, @RequestParam double topRightLong) {
-        return ApiResponse.ok(postService.getPostsInLocation(bottomLeftLat, bottomLeftLong, topRightLat, topRightLong));
+        return ApiResponse.ok(postService.getPostsInLocation(customUserDetails.getId(), bottomLeftLat, bottomLeftLong, topRightLat, topRightLong));
     }
 
     // 상세 페이지 조회
     @GetMapping("/api/posts/{postId}")
-    public ApiResponse<PostResponseDto> getPost(@PathVariable Long postId) {
-        return ApiResponse.ok(postService.getPost(postId));
+    public ApiResponse<PostResponseDto> getPost(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @PathVariable Long postId
+    ) {
+        return ApiResponse.ok(postService.getPost(customUserDetails.getId(), postId));
     }
 
     // 검색
     @GetMapping("/api/posts/search")
     public ApiResponse<List<PostResponseDto>> searchPosts(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestParam(required = false) List<String> weathers,
             @RequestParam(required = false) Double minTemperature,
             @RequestParam(required = false) Double maxTemperature,
@@ -56,7 +65,7 @@ public class PostController {
             @RequestParam(required = false) List<String> styles,
             @RequestParam(required = false) String gender
     ) {
-        return ApiResponse.ok(postService.searchPosts(weathers, minTemperature, maxTemperature, minHeight, maxHeight, minWeight, maxWeight, constitution, styles, gender));
+        return ApiResponse.ok(postService.searchPosts(customUserDetails.getId(), weathers, minTemperature, maxTemperature, minHeight, maxHeight, minWeight, maxWeight, constitution, styles, gender));
     }
 
     // 게시물 등록
