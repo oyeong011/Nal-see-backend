@@ -1,14 +1,15 @@
 package everycoding.nalseebackend.post;
 
 import everycoding.nalseebackend.post.domain.Post;
-import everycoding.nalseebackend.user.domain.FashionStyle;
 import everycoding.nalseebackend.user.domain.User;
 import everycoding.nalseebackend.user.domain.UserInfo;
 
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class PostAlgorithmService {
@@ -50,17 +51,24 @@ public class PostAlgorithmService {
 //    }
 
     // 2차 정렬
-//    public List<Post> sortByAllParams(User user, List<Post> postList) {
-//        return postList.stream()
-//                .sorted(Comparator.comparingDouble(post -> ))
-//    }
+    public List<Post> sortByAllParams(User user, List<Post> postList, UserInfo userInfo, LocalDateTime localDateTime) {
+        return postList.stream()
+                .sorted(Comparator.comparingDouble(post -> totalScore((Post)post, user, userInfo, localDateTime)).reversed())
+                .collect(Collectors.toList());
+    }
 
     //가산점 점수
-//    private double totalScore(Post post, User user, LocalDateTime localDateTime) {
-//        double genderScore = genderScore(post, user);
-//        double timezoneScore = timezoneScore(post, localDateTime);
-//
-//    }
+    private double totalScore(Post post, User user, UserInfo userInfo, LocalDateTime localDateTime) {
+        double genderScore = genderScore(post, user);
+        double timezoneScore = timezoneScore(post, localDateTime);
+        double heightScore = heightScore(post, userInfo);
+        double weightScore = weightScore(post, userInfo);
+        double constitutionScore = constitutionScore(post, userInfo);
+        double styleScore = styleScore(post, userInfo);
+        double likeScore = likeScore(post);
+        return genderScore + timezoneScore + heightScore + weightScore + constitutionScore + styleScore + likeScore ;
+
+    }
 
     //거리 점수 distanceScore
 
@@ -94,9 +102,17 @@ public class PostAlgorithmService {
     }
 
     // 스타일 점수
-//    private double styleScore(Post post, UserInfo userInfo) {
-//
-//    }
+    private double styleScore(Post post, UserInfo userInfo) {
+        return userInfo.getStyle().contains(post.getUserInfo().getStyle()) ? 2 : 0 ;
+    }
+
+    // 좋아요 점수
+    private double likeScore(Post post) {
+        return post.getLikeCNT()*0.01 ;
+    }
+
+
+
 
 
 

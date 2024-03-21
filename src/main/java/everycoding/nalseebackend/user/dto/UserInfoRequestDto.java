@@ -6,12 +6,14 @@ import everycoding.nalseebackend.user.domain.Gender;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @NoArgsConstructor
 public class UserInfoRequestDto {
     private double height;
     private double weight;
     private Constitution constitution;
-    private FashionStyle style;
+    private List<FashionStyle> style;
     private Gender gender;
 }
