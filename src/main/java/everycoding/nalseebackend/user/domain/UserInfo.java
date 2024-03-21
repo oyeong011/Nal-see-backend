@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Embeddable
 @NoArgsConstructor
@@ -15,12 +17,13 @@ public class UserInfo {
     @Enumerated(EnumType.STRING)
     private Constitution constitution;
     @Enumerated(EnumType.STRING)
-    private FashionStyle style;
+    @ElementCollection
+    private List<FashionStyle> style;
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
     @Builder
-    public UserInfo(Double height, Double weight, Constitution constitution, FashionStyle style, Gender gender) {
+    public UserInfo(Double height, Double weight, Constitution constitution, List<FashionStyle> style, Gender gender) {
         this.height = height;
         this.weight = weight;
         this.constitution = constitution;
