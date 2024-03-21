@@ -51,7 +51,6 @@ public class Post extends BaseEntity {
     @Setter
     @Embedded
     private UserInfo userInfo;
-
 //    private String link;
 //    private String brand;
 //    private String productName;
