@@ -15,6 +15,8 @@ public interface PostService {
     List<PostResponseDto> getPostsInLocation(double bottomLeftLat, double bottomLeftLong,
                                              double topRightLat, double topRightLong);
 
+    PostResponseDto getPost(Long postId);
+
     List<PostResponseDto> searchPosts(List<String> weathers, Double minTemperature, Double maxTemperature, Double minHeight, Double maxHeight,
                                       Double minWeight, Double maxWeight, String constitution, List<String> styles, String gender);
 

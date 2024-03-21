@@ -82,6 +82,11 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
+    public PostResponseDto getPost(Long postId) {
+        return null;
+    }
+
+    @Override
     public List<PostResponseDto> searchPosts(List<String> weathers, Double minTemperature, Double maxTemperature, Double minHeight, Double maxHeight,
                                              Double minWeight, Double maxWeight, String constitution, List<String> styles, String gender) {
         Specification<Post> spec = Specification.where(null);

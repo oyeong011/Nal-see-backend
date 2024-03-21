@@ -35,6 +35,11 @@ public class PostController {
         return ApiResponse.ok(postService.getPostsInLocation(bottomLeftLat, bottomLeftLong, topRightLat, topRightLong));
     }
 
+    @GetMapping("/api/posts/{postId}")
+    public ApiResponse<PostResponseDto> getPost(@PathVariable Long postId) {
+        return ApiResponse.ok(postService.getPost(postId));
+    }
+
     // 검색
     @GetMapping("/api/posts/search")
     public ApiResponse<List<PostResponseDto>> searchPosts(
