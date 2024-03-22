@@ -77,7 +77,12 @@ public class PostController {
 
     // 게시물 수정
     @PatchMapping(value = "/api/posts/{postId}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ApiResponse<Void> updatePost(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable Long postId, @RequestPart PostRequestDto requestDto, HttpServletRequest request) throws IOException {
+    public ApiResponse<Void> updatePost(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @PathVariable Long postId,
+            @RequestPart PostRequestDto requestDto,
+            HttpServletRequest request
+    ) throws IOException {
         postService.updatePost(customUserDetails.getId(), postId, requestDto, request);
         return ApiResponse.ok();
     }

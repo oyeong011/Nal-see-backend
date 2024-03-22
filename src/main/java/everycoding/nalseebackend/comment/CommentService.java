@@ -11,7 +11,11 @@ public interface CommentService {
 
     void writeComment(Long postId, CommentRequestDto requestDto);
 
-    void likeComment(Long postId, Long commentId, Long userId);
+    void updateComment(Long userId, Long postId, Long commentId, CommentRequestDto requestDto);
 
-    void cancelLikeComment(Long postId, Long commentId, Long userId);
+    void deleteComment(Long userId, Long postId, Long commentId);
+
+    void likeComment(Long userId, Long postId, Long commentId);
+
+    void cancelLikeComment(Long userId, Long postId, Long commentId);
 }

@@ -32,25 +32,48 @@ public class CommentController {
         return ApiResponse.ok();
     }
 
+    // 댓글 수정
+    @PatchMapping("/api/posts/{postId}/comments/{commentId}")
+    public ApiResponse<Void> updateComment(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @PathVariable Long postId,
+            @PathVariable Long commentId,
+            @RequestBody CommentRequestDto requestDto
+    ) {
+        commentService.updateComment(customUserDetails.getId(), postId, commentId, requestDto);
+        return ApiResponse.ok();
+    }
+
+    // 댓글 삭제
+    @DeleteMapping("/api/posts/{postId}/comments/{commentId}")
+    public ApiResponse<Void> deleteComment(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @PathVariable Long postId,
+            @PathVariable Long commentId
+    ) {
+        commentService.deleteComment(customUserDetails.getId(), postId, commentId);
+        return ApiResponse.ok();
+    }
+
     // 댓글 좋아요
     @PostMapping("/api/posts/{postId}/comment/{commentId}/likes")
     public ApiResponse<Void> likeComment(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @PathVariable Long postId,
-            @PathVariable Long commentId,
-            @AuthenticationPrincipal CustomUserDetails customUserDetails
+            @PathVariable Long commentId
             ) {
-        commentService.likeComment(postId, commentId, customUserDetails.getId());
+        commentService.likeComment(customUserDetails.getId(), postId, commentId);
         return ApiResponse.ok();
     }
 
     // 댓글 좋아요 취소
     @PostMapping("/api/posts/{postId}/comment/{commentId}/likes/cancel")
     public ApiResponse<Void> cancelLikeComment(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @PathVariable Long postId,
-            @PathVariable Long commentId,
-            @AuthenticationPrincipal CustomUserDetails customUserDetails
+            @PathVariable Long commentId
     ) {
-        commentService.cancelLikeComment(postId, commentId, customUserDetails.getId());
+        commentService.cancelLikeComment(customUserDetails.getId(), postId, commentId);
         return ApiResponse.ok();
     }
 }
