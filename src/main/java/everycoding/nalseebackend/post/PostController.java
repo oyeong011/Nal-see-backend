@@ -2,6 +2,7 @@ package everycoding.nalseebackend.post;
 
 import everycoding.nalseebackend.api.ApiResponse;
 import everycoding.nalseebackend.auth.customUser.CustomUserDetails;
+import everycoding.nalseebackend.post.dto.PostForUserFeedResponseDto;
 import everycoding.nalseebackend.post.dto.PostResponseDto;
 import everycoding.nalseebackend.post.dto.PostRequestDto;
 import everycoding.nalseebackend.user.dto.UserInfoResponseDto;
@@ -68,6 +69,15 @@ public class PostController {
         return ApiResponse.ok(postService.searchPosts(customUserDetails.getId(), weathers, minTemperature, maxTemperature, minHeight, maxHeight, minWeight, maxWeight, constitution, styles, gender));
     }
 
+    // 개인 피드의 게시물 리스트
+    @GetMapping("/api/posts/users/{userId}")
+    public ApiResponse<List<PostForUserFeedResponseDto>> getPostsForUserFeed(
+            @PathVariable Long userId,
+            @RequestParam Long lastPostId
+    ) {
+        return ApiResponse.ok(postService.getPostsForUserFeed(userId, lastPostId));
+    }
+
     // 게시물 등록
     @PostMapping(value = "/api/posts", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ApiResponse<Void> post(@RequestPart PostRequestDto requestDto, HttpServletRequest request) throws IOException {
@@ -76,14 +86,13 @@ public class PostController {
     }
 
     // 게시물 수정
-    @PatchMapping(value = "/api/posts/{postId}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PatchMapping("/api/posts/{postId}")
     public ApiResponse<Void> updatePost(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @PathVariable Long postId,
-            @RequestPart PostRequestDto requestDto,
-            HttpServletRequest request
-    ) throws IOException {
-        postService.updatePost(customUserDetails.getId(), postId, requestDto, request);
+            @RequestPart PostRequestDto requestDto
+    ) {
+        postService.updatePost(customUserDetails.getId(), postId, requestDto);
         return ApiResponse.ok();
     }
 

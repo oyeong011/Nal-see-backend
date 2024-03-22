@@ -3,6 +3,7 @@ package everycoding.nalseebackend.post;
 import everycoding.nalseebackend.api.exception.BaseException;
 import everycoding.nalseebackend.aws.S3Service;
 import everycoding.nalseebackend.post.domain.Post;
+import everycoding.nalseebackend.post.dto.PostForUserFeedResponseDto;
 import everycoding.nalseebackend.post.dto.PostRequestDto;
 import everycoding.nalseebackend.post.dto.PostResponseDto;
 import everycoding.nalseebackend.user.UserRepository;
@@ -148,6 +149,22 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
+    public List<PostForUserFeedResponseDto> getPostsForUserFeed(Long userId, Long lastPostId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new BaseException("wrong userId"));
+
+        Pageable pageable = PageRequest.of(0, 12, Sort.by("id").descending());
+
+        return postRepository.findByUserAndIdLessThan(user, lastPostId, pageable)
+                .stream()
+                .map(post -> PostForUserFeedResponseDto.builder()
+                        .postId(post.getId())
+                        .postPicture(post.getPictureList().get(0))
+                        .isMany(post.getPictureList().size()>1)
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public void post(PostRequestDto postRequestDto, HttpServletRequest request) throws IOException {
         MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest) request;
         List<MultipartFile> files = multipartHttpServletRequest.getFiles("photos");
@@ -181,21 +198,11 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public void updatePost(Long userId, Long postId, PostRequestDto postRequestDto, HttpServletRequest request) throws IOException {
+    public void updatePost(Long userId, Long postId, PostRequestDto postRequestDto) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new BaseException("wrong postId"));
 
         if (!post.getUser().getId().equals(userId)) {
             throw new BaseException("수정할 수 있는 권한이 없습니다.");
-        }
-
-        if (request instanceof MultipartHttpServletRequest multipartHttpServletRequest) {
-            List<MultipartFile> files = multipartHttpServletRequest.getFiles("photos");
-
-            if (!files.isEmpty()) {
-                post.getPictureList().forEach(s3Service::deleteS3);
-                List<String> photos = s3Service.uploadS3(files);
-                post.setPictureList(photos);
-            }
         }
 
         if (postRequestDto.getContent() != null) {

@@ -17,20 +17,6 @@ public class UserFeedResponseDto {
 
     private boolean isFollowed;
 
-    @Setter
-    private List<Post> postList;
-
-    @Getter
-    @AllArgsConstructor
-    static public class Post {
-        private long postId;
-        private String postPicture;
-
-        static public Post fromEntity(everycoding.nalseebackend.post.domain.Post postEntity) {
-            return new Post(postEntity.getId(), postEntity.getPictureList().get(0));
-        }
-    }
-
     @Builder
     public UserFeedResponseDto(int feedCount, int followingCount, int followerCount, long userId, String userImage, String username, boolean isFollowed) {
         this.feedCount = feedCount;

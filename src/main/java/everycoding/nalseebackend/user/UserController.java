@@ -51,22 +51,13 @@ public class UserController {
         return ApiResponse.ok();
     }
 
-    // 나의 개인 피드 페이지
-    @GetMapping("/api/users/myFeed")
-    public ApiResponse<UserFeedResponseDto> getMyFeed(
-            @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @RequestParam Long lastPostId
-    ) {
-        return ApiResponse.ok(userService.getMyFeed(customUserDetails.getId(), lastPostId));
-    }
 
-    // 남의 개인 피드 페이지
+    // 개인 피드 페이지
     @GetMapping("/api/users/{userId}/feed")
     public ApiResponse<UserFeedResponseDto> getFeed(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @PathVariable Long userId,
-            @RequestParam Long lastPostId
+            @PathVariable Long userId
     ) {
-        return ApiResponse.ok(userService.getFeed(customUserDetails.getId(), userId, lastPostId));
+        return ApiResponse.ok(userService.getFeed(customUserDetails.getId(), userId));
     }
 }
