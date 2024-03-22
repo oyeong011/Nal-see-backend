@@ -66,56 +66,55 @@ public class PostAlgorithmService {
         double constitutionScore = constitutionScore(post, userInfo);
         double styleScore = styleScore(post, userInfo);
         double likeScore = likeScore(post);
-        return genderScore + timezoneScore + heightScore + weightScore + constitutionScore + styleScore + likeScore ;
-
+        double followingScore = followingScore(post, user);
+        return genderScore + timezoneScore + heightScore + weightScore + constitutionScore + styleScore + likeScore  + followingScore;
     }
 
     //거리 점수 distanceScore
 
     //성별 점수
-    private double genderScore(Post post, User user) {
-        return post.getUserInfo().getGender() == user.getGender() ? 1 : 0;
+    double genderScore(Post post, User user) {
+        return post.getUserInfo().getGender() == user.getUserInfo().getGender() ? 1 : 0;
     }
 
     //동시간대 점수
-    private double timezoneScore(Post post, LocalDateTime localDateTime) {
+    double timezoneScore(Post post, LocalDateTime localDateTime) {
         int timezoneDifference = Math.abs(post.getCreateDate().getHour() - localDateTime.getHour());
         return timezoneDifference <= 3 ? 5 : 0 ;
     }
 
 
     //키 점수
-    private double heightScore(Post post, UserInfo userInfo) {
+    double heightScore(Post post, UserInfo userInfo) {
         double heightDifference = Math.abs(post.getUserInfo().getHeight() - userInfo.getHeight());
         return heightDifference <= 5 ? 1 : 0;
     }
 
     // 몸무게 점수
-    private double weightScore (Post post, UserInfo userInfo) {
+    double weightScore (Post post, UserInfo userInfo) {
         double weightDifference = Math.abs(post.getUserInfo().getWeight() - userInfo.getWeight());
         return weightDifference <= 5 ? 1: 0;
     }
 
     // 체질 점수
-    private double constitutionScore(Post post, UserInfo userInfo) {
+    double constitutionScore(Post post, UserInfo userInfo) {
         return post.getUserInfo().getConstitution() == userInfo.getConstitution() ? 3 : 0;
     }
 
     // 스타일 점수
-    private double styleScore(Post post, UserInfo userInfo) {
+    double styleScore(Post post, UserInfo userInfo) {
         return userInfo.getStyle().contains(post.getUserInfo().getStyle()) ? 2 : 0 ;
     }
 
     // 좋아요 점수
-    private double likeScore(Post post) {
+    double likeScore(Post post) {
         return post.getLikeCNT()*0.01 ;
     }
 
-
-
-
-
-
-
+    double followingScore(Post post, User user) {
+        // 현재 사용자가 게시물 작성자를 팔로우하고 있는지 확인
+        boolean isFollowing = user.getFollowings().contains(post.getUser());
+        return isFollowing ? 2 : 0; // 팔로우하고 있다면 가산점 2점 부여
+    }
 
 }

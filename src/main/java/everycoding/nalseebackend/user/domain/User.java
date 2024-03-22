@@ -34,7 +34,6 @@ public class User extends BaseEntity {
     private String email;
     private String password;
     private String picture;
-    private Gender gender;
 
     private String role;
 
@@ -86,12 +85,11 @@ public class User extends BaseEntity {
     }
 
     @Builder
-    public User(Long id, String username, String email, String password, Gender gender, String picture, String role, String refreshToken, AuthProvider provider, String providerId) {
+    public User(Long id, String username, String email, String password, String picture, String role, String refreshToken, AuthProvider provider, String providerId) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.password = password;
-        this.gender = gender;
         this.picture = picture;
         this.role = role;
         this.refreshToken = refreshToken;
