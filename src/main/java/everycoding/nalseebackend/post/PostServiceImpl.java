@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService{
 
@@ -38,6 +40,7 @@ public class PostServiceImpl implements PostService{
     private final PostSpecification postSpecification;
 
     @Override
+    @Transactional(readOnly = true)
     public List<PostResponseDto> getPosts(Long userId, Long lastPostId, int size) {
         Pageable pageable = PageRequest.of(0, size, Sort.by("id").descending());
         return postRepository.findByIdLessThan(lastPostId, pageable)
@@ -60,6 +63,7 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<PostResponseDto> getPostsInLocation(
             Long userId,
             double bottomLeftLat, double bottomLeftLong,
@@ -86,6 +90,7 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public PostResponseDto getPost(Long userId, Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new BaseException("wrong postId"));
         return PostResponseDto.builder()
@@ -104,6 +109,7 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<PostResponseDto> searchPosts(Long userId, List<String> weathers, Double minTemperature, Double maxTemperature, Double minHeight, Double maxHeight,
                                              Double minWeight, Double maxWeight, String constitution, List<String> styles, String gender) {
         Specification<Post> spec = Specification.where(null);
