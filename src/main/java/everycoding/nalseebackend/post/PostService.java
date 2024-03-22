@@ -1,5 +1,6 @@
 package everycoding.nalseebackend.post;
 
+import everycoding.nalseebackend.post.dto.PostForUserFeedResponseDto;
 import everycoding.nalseebackend.post.dto.PostRequestDto;
 import everycoding.nalseebackend.post.dto.PostResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,9 +20,11 @@ public interface PostService {
     List<PostResponseDto> searchPosts(Long userId, List<String> weathers, Double minTemperature, Double maxTemperature, Double minHeight, Double maxHeight,
                                       Double minWeight, Double maxWeight, String constitution, List<String> styles, String gender);
 
+    List<PostForUserFeedResponseDto> getPostsForUserFeed(Long userId, Long lastPostId);
+
     void post(PostRequestDto postRequestDto, HttpServletRequest request) throws IOException;
 
-    void updatePost(Long userId, Long postId, PostRequestDto postRequestDto, HttpServletRequest request) throws IOException;
+    void updatePost(Long userId, Long postId, PostRequestDto postRequestDto);
 
     void deletePost(Long userId, Long postId);
 

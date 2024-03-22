@@ -18,16 +18,17 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
-    private final PostRepository postRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
     public void followUser(Long userId, Long myId) {
@@ -48,6 +49,7 @@ public class UserService {
         userRepository.save(me);
     }
 
+    @Transactional(readOnly = true)
     public UserInfoResponseDto getUserInfo(long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new BaseException("wrong userId"));
         return UserInfoResponseDto.builder()
@@ -73,35 +75,12 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public UserFeedResponseDto getMyFeed(long userId, long lastPostId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new BaseException("wrong userId"));
-        Pageable pageable = PageRequest.of(0, 12, Sort.by("id").descending());
-
-        UserFeedResponseDto responseDto = UserFeedResponseDto.builder()
-                .feedCount(user.getPosts().size())
-                .followingCount(user.getFollowings().size())
-                .followerCount(user.getFollowers().size())
-                .userId(user.getId())
-                .userImage(user.getPicture())
-                .username(user.getUsername())
-                .build();
-
-        responseDto.setPostList(
-                postRepository.findByUserAndIdLessThan(user, lastPostId, pageable)
-                        .stream()
-                        .map(UserFeedResponseDto.Post::fromEntity)
-                        .collect(Collectors.toList())
-        );
-
-        return responseDto;
-    }
-
-    public UserFeedResponseDto getFeed(long myId, long userId, long lastPostId) {
+    @Transactional(readOnly = true)
+    public UserFeedResponseDto getFeed(long myId, long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new BaseException("wrong userId"));
         User me = userRepository.findById(myId).orElseThrow(() -> new BaseException("wrong userId"));
-        Pageable pageable = PageRequest.of(0, 12, Sort.by("id").descending());
 
-        UserFeedResponseDto responseDto = UserFeedResponseDto.builder()
+        return UserFeedResponseDto.builder()
                 .feedCount(user.getPosts().size())
                 .followingCount(user.getFollowings().size())
                 .followerCount(user.getFollowers().size())
@@ -110,15 +89,6 @@ public class UserService {
                 .username(user.getUsername())
                 .isFollowed(user.getFollowers().contains(me))
                 .build();
-
-        responseDto.setPostList(
-                postRepository.findByUserAndIdLessThan(user, lastPostId, pageable)
-                        .stream()
-                        .map(UserFeedResponseDto.Post::fromEntity)
-                        .collect(Collectors.toList())
-        );
-
-        return responseDto;
     }
 
     public User findByEmail(String email) {

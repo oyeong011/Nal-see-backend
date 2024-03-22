@@ -11,12 +11,14 @@ import everycoding.nalseebackend.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService{
 
@@ -25,6 +27,7 @@ public class CommentServiceImpl implements CommentService{
     private final CommentRepository commentRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public List<CommentResponseDto> getComments(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new BaseException("wrong postId"));
         return commentRepository.findAllByPost(post)
@@ -56,7 +59,32 @@ public class CommentServiceImpl implements CommentService{
     }
 
     @Override
-    public void likeComment(Long postId, Long commentId, Long userId) {
+    public void updateComment(Long userId, Long postId, Long commentId, CommentRequestDto requestDto) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new BaseException("wrong commentId"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new BaseException("wrong userId"));
+
+        if (!comment.getUser().equals(user)) {
+            throw new BaseException("수정할 수 있는 권한이 없습니다.");
+        }
+
+        comment.setContent(requestDto.getContent());
+        commentRepository.save(comment);
+    }
+
+    @Override
+    public void deleteComment(Long userId, Long postId, Long commentId) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new BaseException("wrong commentId"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new BaseException("wrong userId"));
+
+        if (!comment.getUser().equals(user)) {
+            throw new BaseException("삭제할 수 있는 권한이 없습니다.");
+        }
+
+        commentRepository.delete(comment);
+    }
+
+    @Override
+    public void likeComment(Long userId, Long postId, Long commentId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new BaseException("wrong userId"));
         Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new BaseException("wrong commentId"));
 
@@ -68,7 +96,7 @@ public class CommentServiceImpl implements CommentService{
     }
 
     @Override
-    public void cancelLikeComment(Long postId, Long commentId, Long userId) {
+    public void cancelLikeComment(Long userId, Long postId, Long commentId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new BaseException("wrong userId"));
         Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new BaseException("wrong commentId"));
 
