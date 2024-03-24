@@ -46,20 +46,7 @@ public class PostServiceImpl implements PostService{
         Pageable pageable = PageRequest.of(0, size, Sort.by("id").descending());
         return postRepository.findByIdLessThan(lastPostId, pageable)
                 .stream()
-                .map(post -> PostResponseDto.builder()
-                        .id(post.getId())
-                        .pictureList(post.getPictureList())
-                        .content(post.getContent())
-                        .likeCnt(post.getLikeCNT())
-                        .isLiked(isLiked(userId, post.getId()))
-                        .createDate(post.getCreateDate())
-                        .address(post.getAddress())
-                        .weather(post.getWeather())
-                        .temperature(post.getTemperature())
-                        .userId(post.getUser().getId())
-                        .username(post.getUser().getUsername())
-                        .userImage(post.getUser().getPicture())
-                        .build())
+                .map(post -> PostResponseDto.createPostResponseDto(post, isLiked(userId, post.getId())))
                 .collect(Collectors.toList());
     }
 
@@ -73,20 +60,7 @@ public class PostServiceImpl implements PostService{
         List<Post> posts = postRepository.findByLocationWithin(bottomLeftLat, bottomLeftLong, topRightLat, topRightLong);
 
         return posts.stream()
-                .map(post -> PostResponseDto.builder()
-                        .id(post.getId())
-                        .pictureList(post.getPictureList())
-                        .content(post.getContent())
-                        .likeCnt(post.getLikeCNT())
-                        .isLiked(isLiked(userId, post.getId()))
-                        .createDate(post.getCreateDate())
-                        .address(post.getAddress())
-                        .weather(post.getWeather())
-                        .temperature(post.getTemperature())
-                        .userId(post.getUser().getId())
-                        .username(post.getUser().getUsername())
-                        .userImage(post.getUser().getPicture())
-                        .build())
+                .map(post -> PostResponseDto.createPostResponseDto(post, isLiked(userId, post.getId())))
                 .collect(Collectors.toList());
     }
 
@@ -94,19 +68,7 @@ public class PostServiceImpl implements PostService{
     @Transactional(readOnly = true)
     public PostResponseDto getPost(Long userId, Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new BaseException("wrong postId"));
-        return PostResponseDto.builder()
-                .id(post.getId())
-                .pictureList(post.getPictureList())
-                .content(post.getContent())
-                .likeCnt(post.getLikeCNT())
-                .isLiked(isLiked(userId, postId))
-                .address(post.getAddress())
-                .weather(post.getWeather())
-                .temperature(post.getTemperature())
-                .userId(post.getUser().getId())
-                .username(post.getUser().getUsername())
-                .userImage(post.getUser().getPicture())
-                .build();
+        return PostResponseDto.createPostResponseDto(post, isLiked(userId, postId));
     }
 
     @Override
@@ -133,18 +95,7 @@ public class PostServiceImpl implements PostService{
 
         return postRepository.findAll(spec)
                 .stream()
-                .map(post -> PostResponseDto.builder()
-                        .id(post.getId())
-                        .pictureList(post.getPictureList())
-                        .content(post.getContent())
-                        .likeCnt(post.getLikeCNT())
-                        .address(post.getAddress())
-                        .weather(post.getWeather())
-                        .temperature(post.getTemperature())
-                        .userId(post.getUser().getId())
-                        .username(post.getUser().getUsername())
-                        .userImage(post.getUser().getPicture())
-                        .build())
+                .map(post -> PostResponseDto.createPostResponseDto(post, isLiked(userId, post.getId())))
                 .collect(Collectors.toList());
     }
 
