@@ -3,7 +3,6 @@ package everycoding.nalseebackend.user.domain;
 import everycoding.nalseebackend.BaseEntity;
 import everycoding.nalseebackend.auth.oauth2.AuthProvider;
 import everycoding.nalseebackend.auth.oauth2.OAuth2UserInfo;
-import everycoding.nalseebackend.chat.domain.Chat;
 import everycoding.nalseebackend.comment.domain.Comment;
 import everycoding.nalseebackend.post.domain.Post;
 import jakarta.persistence.Entity;
@@ -68,9 +67,6 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user")
     private List<Post> posts;
-
-    @OneToMany(mappedBy = "user")
-    private List<Chat> chats;
 
     @OneToMany(mappedBy = "user")
     private List<Comment> comments;
