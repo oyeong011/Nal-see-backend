@@ -51,6 +51,7 @@ public class PostResponseDto {
                 .content(post.getContent())
                 .likeCnt(post.getLikeCNT())
                 .isLiked(isLiked)
+                .createDate(post.getCreateDate())
                 .address(post.getAddress())
                 .weather(post.getWeather())
                 .temperature(post.getTemperature())
