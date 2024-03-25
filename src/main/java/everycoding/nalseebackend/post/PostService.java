@@ -1,5 +1,6 @@
 package everycoding.nalseebackend.post;
 
+import everycoding.nalseebackend.post.dto.PostForDetailResponseDto;
 import everycoding.nalseebackend.post.dto.PostForUserFeedResponseDto;
 import everycoding.nalseebackend.post.dto.PostRequestDto;
 import everycoding.nalseebackend.post.dto.PostResponseDto;
@@ -10,12 +11,12 @@ import java.util.List;
 
 public interface PostService {
 
-    List<PostResponseDto> getPosts(Long userId, Long lastPostId, int size);
+    List<PostResponseDto> getPosts(Long userId, Long lastPostId, Double nowLatitude, Double nowLongitude);
 
     List<PostResponseDto> getPostsInLocation(Long userId, double bottomLeftLat, double bottomLeftLong,
                                              double topRightLat, double topRightLong);
 
-    PostResponseDto getPost(Long userId, Long postId);
+    PostForDetailResponseDto getPost(Long userId, Long postId);
 
     List<PostResponseDto> searchPosts(Long userId, List<String> weathers, Double minTemperature, Double maxTemperature, Double minHeight, Double maxHeight,
                                       Double minWeight, Double maxWeight, String constitution, List<String> styles, String gender);

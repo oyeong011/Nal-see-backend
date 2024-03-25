@@ -51,7 +51,6 @@ public class UserController {
         return ApiResponse.ok();
     }
 
-
     // 개인 피드 페이지
     @GetMapping("/api/users/{userId}/feed")
     public ApiResponse<UserFeedResponseDto> getFeed(

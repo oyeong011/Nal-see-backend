@@ -1,5 +1,6 @@
 package everycoding.nalseebackend.post.dto;
 
+import everycoding.nalseebackend.post.domain.Post;
 import everycoding.nalseebackend.weather.Weather;
 import lombok.Builder;
 import lombok.Getter;
@@ -41,5 +42,22 @@ public class PostResponseDto {
         this.userId = userId;
         this.username = username;
         this.userImage = userImage;
+    }
+
+    static public PostResponseDto createPostResponseDto(Post post, boolean isLiked) {
+        return PostResponseDto.builder()
+                .id(post.getId())
+                .pictureList(post.getPictureList())
+                .content(post.getContent())
+                .likeCnt(post.getLikeCNT())
+                .isLiked(isLiked)
+                .createDate(post.getCreateDate())
+                .address(post.getAddress())
+                .weather(post.getWeather())
+                .temperature(post.getTemperature())
+                .userId(post.getUser().getId())
+                .username(post.getUser().getUsername())
+                .userImage(post.getUser().getPicture())
+                .build();
     }
 }

@@ -2,6 +2,7 @@ package everycoding.nalseebackend.post;
 
 import everycoding.nalseebackend.api.ApiResponse;
 import everycoding.nalseebackend.auth.customUser.CustomUserDetails;
+import everycoding.nalseebackend.post.dto.PostForDetailResponseDto;
 import everycoding.nalseebackend.post.dto.PostForUserFeedResponseDto;
 import everycoding.nalseebackend.post.dto.PostResponseDto;
 import everycoding.nalseebackend.post.dto.PostRequestDto;
@@ -28,9 +29,10 @@ public class PostController {
     public ApiResponse<List<PostResponseDto>> getPosts(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestParam Long lastPostId,
-            @RequestParam int size
+            @RequestParam Double nowLatitude,
+            @RequestParam Double nowLongitude
     ) {
-        return ApiResponse.ok(postService.getPosts(customUserDetails.getId(), lastPostId, size));
+        return ApiResponse.ok(postService.getPosts(customUserDetails.getId(), lastPostId, nowLatitude, nowLongitude));
     }
 
     // 지도 기준 조회
@@ -44,7 +46,7 @@ public class PostController {
 
     // 상세 페이지 조회
     @GetMapping("/api/posts/{postId}")
-    public ApiResponse<PostResponseDto> getPost(
+    public ApiResponse<PostForDetailResponseDto> getPost(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @PathVariable Long postId
     ) {

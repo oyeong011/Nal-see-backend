@@ -2,7 +2,9 @@ package everycoding.nalseebackend.post;
 
 import everycoding.nalseebackend.api.exception.BaseException;
 import everycoding.nalseebackend.aws.S3Service;
+import everycoding.nalseebackend.comment.CommentService;
 import everycoding.nalseebackend.post.domain.Post;
+import everycoding.nalseebackend.post.dto.PostForDetailResponseDto;
 import everycoding.nalseebackend.post.dto.PostForUserFeedResponseDto;
 import everycoding.nalseebackend.post.dto.PostRequestDto;
 import everycoding.nalseebackend.post.dto.PostResponseDto;
@@ -37,29 +39,17 @@ public class PostServiceImpl implements PostService{
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final S3Service s3Service;
+    private final CommentService commentService;
     private final RestTemplate restTemplate;
     private final PostSpecification postSpecification;
 
     @Override
     @Transactional(readOnly = true)
-    public List<PostResponseDto> getPosts(Long userId, Long lastPostId, int size) {
-        Pageable pageable = PageRequest.of(0, size, Sort.by("id").descending());
-        return postRepository.findByIdLessThan(lastPostId, pageable)
+    public List<PostResponseDto> getPosts(Long userId, Long lastPostId, Double nowLatitude, Double nowLongitude) {
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
+        return postRepository.findByIdLessThan(lastPostId!=-1 ? lastPostId : Long.MAX_VALUE, pageable)
                 .stream()
-                .map(post -> PostResponseDto.builder()
-                        .id(post.getId())
-                        .pictureList(post.getPictureList())
-                        .content(post.getContent())
-                        .likeCnt(post.getLikeCNT())
-                        .isLiked(isLiked(userId, post.getId()))
-                        .createDate(post.getCreateDate())
-                        .address(post.getAddress())
-                        .weather(post.getWeather())
-                        .temperature(post.getTemperature())
-                        .userId(post.getUser().getId())
-                        .username(post.getUser().getUsername())
-                        .userImage(post.getUser().getPicture())
-                        .build())
+                .map(post -> PostResponseDto.createPostResponseDto(post, isLiked(userId, post.getId())))
                 .collect(Collectors.toList());
     }
 
@@ -73,40 +63,18 @@ public class PostServiceImpl implements PostService{
         List<Post> posts = postRepository.findByLocationWithin(bottomLeftLat, bottomLeftLong, topRightLat, topRightLong);
 
         return posts.stream()
-                .map(post -> PostResponseDto.builder()
-                        .id(post.getId())
-                        .pictureList(post.getPictureList())
-                        .content(post.getContent())
-                        .likeCnt(post.getLikeCNT())
-                        .isLiked(isLiked(userId, post.getId()))
-                        .createDate(post.getCreateDate())
-                        .address(post.getAddress())
-                        .weather(post.getWeather())
-                        .temperature(post.getTemperature())
-                        .userId(post.getUser().getId())
-                        .username(post.getUser().getUsername())
-                        .userImage(post.getUser().getPicture())
-                        .build())
+                .map(post -> PostResponseDto.createPostResponseDto(post, isLiked(userId, post.getId())))
                 .collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public PostResponseDto getPost(Long userId, Long postId) {
+    public PostForDetailResponseDto getPost(Long userId, Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new BaseException("wrong postId"));
-        return PostResponseDto.builder()
-                .id(post.getId())
-                .pictureList(post.getPictureList())
-                .content(post.getContent())
-                .likeCnt(post.getLikeCNT())
-                .isLiked(isLiked(userId, postId))
-                .address(post.getAddress())
-                .weather(post.getWeather())
-                .temperature(post.getTemperature())
-                .userId(post.getUser().getId())
-                .username(post.getUser().getUsername())
-                .userImage(post.getUser().getPicture())
-                .build();
+        return new PostForDetailResponseDto(
+                PostResponseDto.createPostResponseDto(post, isLiked(userId, post.getId())),
+                commentService.getComments(postId)
+        );
     }
 
     @Override
@@ -133,18 +101,7 @@ public class PostServiceImpl implements PostService{
 
         return postRepository.findAll(spec)
                 .stream()
-                .map(post -> PostResponseDto.builder()
-                        .id(post.getId())
-                        .pictureList(post.getPictureList())
-                        .content(post.getContent())
-                        .likeCnt(post.getLikeCNT())
-                        .address(post.getAddress())
-                        .weather(post.getWeather())
-                        .temperature(post.getTemperature())
-                        .userId(post.getUser().getId())
-                        .username(post.getUser().getUsername())
-                        .userImage(post.getUser().getPicture())
-                        .build())
+                .map(post -> PostResponseDto.createPostResponseDto(post, isLiked(userId, post.getId())))
                 .collect(Collectors.toList());
     }
 

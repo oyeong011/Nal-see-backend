@@ -28,6 +28,7 @@ public class Post extends BaseEntity {
     private List<String> pictureList;
 
     @Setter
+    @Column(columnDefinition = "LONGTEXT")
     private String content;
 
     private int likeCNT;
@@ -45,6 +46,7 @@ public class Post extends BaseEntity {
     @Setter
     private double latitude;
 
+    @Enumerated(EnumType.STRING)
     private Weather weather;
     private double temperature;
 
