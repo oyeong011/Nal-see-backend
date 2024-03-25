@@ -6,6 +6,7 @@ import everycoding.nalseebackend.post.dto.PostForDetailResponseDto;
 import everycoding.nalseebackend.post.dto.PostForUserFeedResponseDto;
 import everycoding.nalseebackend.post.dto.PostResponseDto;
 import everycoding.nalseebackend.post.dto.PostRequestDto;
+import everycoding.nalseebackend.user.UserService;
 import everycoding.nalseebackend.user.dto.UserInfoResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
+    private final UserService userService;
 
     // 기본 조회
     @GetMapping("/api/posts")
@@ -32,6 +34,7 @@ public class PostController {
             @RequestParam Double nowLatitude,
             @RequestParam Double nowLongitude
     ) {
+        userService.updateUserLocation(customUserDetails.getEmail(), nowLatitude, nowLongitude);
         return ApiResponse.ok(postService.getPosts(customUserDetails.getId(), lastPostId, nowLatitude, nowLongitude));
     }
 

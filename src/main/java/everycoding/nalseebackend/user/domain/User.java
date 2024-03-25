@@ -38,10 +38,6 @@ public class User extends BaseEntity {
 
     private boolean newUser = true;
 
-    //사용자의 실시간 정보를 받아오기 위해 추가
-    private double userLatitude;
-    private double userLongitude;
-
     @Setter
     private String refreshToken;
 
@@ -74,6 +70,11 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user")
     private List<Comment> comments;
+
+    @Setter
+    private Double nowLatitude;
+    @Setter
+    private Double nowLongitude;
 
     public User(String username, String email) {
         this.username = username;
