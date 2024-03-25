@@ -2,7 +2,9 @@ package everycoding.nalseebackend.post;
 
 import everycoding.nalseebackend.api.exception.BaseException;
 import everycoding.nalseebackend.aws.S3Service;
+import everycoding.nalseebackend.comment.CommentService;
 import everycoding.nalseebackend.post.domain.Post;
+import everycoding.nalseebackend.post.dto.PostForDetailResponseDto;
 import everycoding.nalseebackend.post.dto.PostForUserFeedResponseDto;
 import everycoding.nalseebackend.post.dto.PostRequestDto;
 import everycoding.nalseebackend.post.dto.PostResponseDto;
@@ -37,6 +39,7 @@ public class PostServiceImpl implements PostService{
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final S3Service s3Service;
+    private final CommentService commentService;
     private final RestTemplate restTemplate;
     private final PostSpecification postSpecification;
 
@@ -66,9 +69,12 @@ public class PostServiceImpl implements PostService{
 
     @Override
     @Transactional(readOnly = true)
-    public PostResponseDto getPost(Long userId, Long postId) {
+    public PostForDetailResponseDto getPost(Long userId, Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new BaseException("wrong postId"));
-        return PostResponseDto.createPostResponseDto(post, isLiked(userId, postId));
+        return new PostForDetailResponseDto(
+                PostResponseDto.createPostResponseDto(post, isLiked(userId, post.getId())),
+                commentService.getComments(postId)
+        );
     }
 
     @Override

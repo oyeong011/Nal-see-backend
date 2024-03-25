@@ -2,6 +2,7 @@ package everycoding.nalseebackend.post;
 
 import everycoding.nalseebackend.api.ApiResponse;
 import everycoding.nalseebackend.auth.customUser.CustomUserDetails;
+import everycoding.nalseebackend.post.dto.PostForDetailResponseDto;
 import everycoding.nalseebackend.post.dto.PostForUserFeedResponseDto;
 import everycoding.nalseebackend.post.dto.PostResponseDto;
 import everycoding.nalseebackend.post.dto.PostRequestDto;
@@ -44,7 +45,7 @@ public class PostController {
 
     // 상세 페이지 조회
     @GetMapping("/api/posts/{postId}")
-    public ApiResponse<PostResponseDto> getPost(
+    public ApiResponse<PostForDetailResponseDto> getPost(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @PathVariable Long postId
     ) {
