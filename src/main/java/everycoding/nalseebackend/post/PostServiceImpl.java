@@ -45,9 +45,9 @@ public class PostServiceImpl implements PostService{
 
     @Override
     @Transactional(readOnly = true)
-    public List<PostResponseDto> getPosts(Long userId, Long lastPostId, int size) {
-        Pageable pageable = PageRequest.of(0, size, Sort.by("id").descending());
-        return postRepository.findByIdLessThan(lastPostId, pageable)
+    public List<PostResponseDto> getPosts(Long userId, Long lastPostId, Double nowLatitude, Double nowLongitude) {
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
+        return postRepository.findByIdLessThan(lastPostId!=-1 ? lastPostId : Long.MAX_VALUE, pageable)
                 .stream()
                 .map(post -> PostResponseDto.createPostResponseDto(post, isLiked(userId, post.getId())))
                 .collect(Collectors.toList());

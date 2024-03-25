@@ -29,9 +29,10 @@ public class PostController {
     public ApiResponse<List<PostResponseDto>> getPosts(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestParam Long lastPostId,
-            @RequestParam int size
+            @RequestParam Double nowLatitude,
+            @RequestParam Double nowLongitude
     ) {
-        return ApiResponse.ok(postService.getPosts(customUserDetails.getId(), lastPostId, size));
+        return ApiResponse.ok(postService.getPosts(customUserDetails.getId(), lastPostId, nowLatitude, nowLongitude));
     }
 
     // 지도 기준 조회
