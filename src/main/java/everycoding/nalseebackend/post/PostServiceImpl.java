@@ -213,7 +213,7 @@ public class PostServiceImpl implements PostService{
 
         Pageable pageable = PageRequest.of(0, 12, Sort.by("id").descending());
 
-        return postRepository.findByUserAndIdLessThan(user, lastPostId, pageable)
+        return postRepository.findByUserAndIdLessThan(user, lastPostId!=-1 ? lastPostId : Long.MAX_VALUE, pageable)
                 .stream()
                 .map(post -> PostForUserFeedResponseDto.builder()
                         .postId(post.getId())

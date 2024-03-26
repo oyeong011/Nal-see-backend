@@ -2,6 +2,7 @@ package everycoding.nalseebackend.user;
 
 import everycoding.nalseebackend.api.exception.BaseException;
 import everycoding.nalseebackend.post.PostRepository;
+import everycoding.nalseebackend.post.domain.Post;
 import everycoding.nalseebackend.user.domain.UserInfo;
 import everycoding.nalseebackend.user.dto.UserFeedResponseDto;
 import everycoding.nalseebackend.user.dto.UserInfoRequestDto;
@@ -20,6 +21,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -29,6 +32,7 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PostRepository postRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
     public void followUser(Long userId, Long myId) {
@@ -112,4 +116,11 @@ public class UserService {
         log.info("회원가입 완료");
     }
 
+    public String findUserTokenByPostId(Long postId) {
+        Optional<Post> byId = postRepository.findById(postId);
+        Post post = byId.orElseThrow();
+        User user = post.getUser();
+        List<String> fcmToken = user.getFcmToken();
+        return fcmToken.stream().findFirst().toString();
+    }
 }

@@ -4,10 +4,15 @@ import everycoding.nalseebackend.api.ApiResponse;
 import everycoding.nalseebackend.auth.customUser.CustomUserDetails;
 import everycoding.nalseebackend.comment.dto.CommentRequestDto;
 import everycoding.nalseebackend.comment.dto.CommentResponseDto;
+import everycoding.nalseebackend.firebase.FcmService;
+import everycoding.nalseebackend.firebase.FcmServiceImpl;
+import everycoding.nalseebackend.firebase.dto.FcmSendDto;
+import everycoding.nalseebackend.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -15,6 +20,8 @@ import java.util.List;
 public class CommentController {
 
     private final CommentService commentService;
+    private final FcmService fcmService;
+    private final UserService userService;
 
     // 댓글 조회
     @GetMapping("/api/posts/{postId}/comments")
@@ -27,8 +34,18 @@ public class CommentController {
     public ApiResponse<Void> writeComment(
             @PathVariable Long postId,
             @RequestBody CommentRequestDto requestDto
-    ) {
-        commentService.writeComment(postId, requestDto);
+    ) throws IOException {
+        String userToken = userService.findUserTokenByPostId(postId);
+
+        // FCM 메시지 생성 및 전송
+        FcmSendDto fcmSendDto = FcmSendDto.builder()
+                .token(userToken)
+                .title("새로운 댓글 알림")
+                .body("당신의 게시글에 새로운 댓글이 달렸습니다.")
+                .build();
+
+        fcmService.sendMessageTo(fcmSendDto);
+
         return ApiResponse.ok();
     }
 

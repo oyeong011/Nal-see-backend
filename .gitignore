@@ -37,3 +37,4 @@ out/
 .vscode/
 
 src/main/resources/application-secret.yml
+/src/main/resources/firebase/nal-see-firebase-adminsdk-zbgfm-699897e249.json
