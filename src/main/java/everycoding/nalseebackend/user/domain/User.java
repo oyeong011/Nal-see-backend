@@ -71,10 +71,6 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user")
     private List<Comment> comments;
 
-    @Setter
-    private Double nowLatitude;
-    @Setter
-    private Double nowLongitude;
 
     public User(String username, String email) {
         this.username = username;

@@ -29,7 +29,9 @@ public class PostResponseDto {
     private String userImage;
 
     @Builder
-    public PostResponseDto(Long id, List<String> pictureList, String content, int likeCnt, boolean isLiked, LocalDateTime createDate, String address, Weather weather, double temperature, Long userId, String username, String userImage) {
+    public PostResponseDto(Long id, List<String> pictureList, String content, int likeCnt, boolean isLiked,
+                           LocalDateTime createDate, String address, Weather weather, double temperature, Long userId,
+                           String username, String userImage) {
         this.id = id;
         this.pictureList = pictureList;
         this.content = content;

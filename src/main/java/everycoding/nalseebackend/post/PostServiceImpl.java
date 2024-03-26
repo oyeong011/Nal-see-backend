@@ -4,10 +4,7 @@ import everycoding.nalseebackend.api.exception.BaseException;
 import everycoding.nalseebackend.aws.S3Service;
 import everycoding.nalseebackend.comment.CommentService;
 import everycoding.nalseebackend.post.domain.Post;
-import everycoding.nalseebackend.post.dto.PostForDetailResponseDto;
-import everycoding.nalseebackend.post.dto.PostForUserFeedResponseDto;
-import everycoding.nalseebackend.post.dto.PostRequestDto;
-import everycoding.nalseebackend.post.dto.PostResponseDto;
+import everycoding.nalseebackend.post.dto.*;
 import everycoding.nalseebackend.user.UserRepository;
 import everycoding.nalseebackend.user.domain.*;
 import everycoding.nalseebackend.user.dto.UserInfoResponseDto;
@@ -27,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,12 +43,116 @@ public class PostServiceImpl implements PostService{
 
     @Override
     @Transactional(readOnly = true)
-    public List<PostResponseDto> getPosts(Long userId, Long lastPostId, Double nowLatitude, Double nowLongitude) {
+    public List<PostScoreDto> getPosts(Long userId, Long lastPostId, Double nowLatitude, Double nowLongitude ) {
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
-        return postRepository.findByIdLessThan(lastPostId!=-1 ? lastPostId : Long.MAX_VALUE, pageable)
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        UserInfo userInfo = user.getUserInfo();
+        LocalDateTime localDateTime = LocalDateTime.now();
+        List<PostScoreDto> postScoreDto = postRepository.findByIdLessThan(lastPostId != -1 ? lastPostId : Long.MAX_VALUE,pageable)
                 .stream()
-                .map(post -> PostResponseDto.createPostResponseDto(post, isLiked(userId, post.getId())))
-                .collect(Collectors.toList());
+                .map(post -> {
+                    double score = totalScore(post, user, userInfo, localDateTime, nowLatitude, nowLongitude);
+                    PostResponseDto postResponseDto = PostResponseDto.createPostResponseDto(post, isLiked(userId, post.getId()));
+                    return new PostScoreDto(postResponseDto, score);
+                }).collect(Collectors.toList());
+
+
+        //점수에 따라 내림차순
+        postScoreDto.sort((p1, p2) -> Double.compare(p2.getScore(), p1.getScore()));
+
+        //정렬된 리스트에서 PostResponseDto 추출하여 반환
+        return postScoreDto;
+
+    }
+    //가산점 점수
+    private double totalScore(Post post, User user, UserInfo userInfo, LocalDateTime localDateTime, Double nowLatitude, Double nowLongitude) {
+        double genderScore = genderScore(post, user);
+        double timezoneScore = timezoneScore(post, localDateTime);
+        double heightScore = heightScore(post, userInfo);
+        double weightScore = weightScore(post, userInfo);
+        double constitutionScore = constitutionScore(post, userInfo);
+        double styleScore = styleScore(post, userInfo);
+        double likeScore = likeScore(post);
+        double followingScore = followingScore(post, user);
+        double distanceScore = distanceScore(post.getLatitude(), post.getLongitude(), nowLatitude, nowLongitude);
+        return distanceScore + genderScore + timezoneScore + heightScore + weightScore + constitutionScore + styleScore + likeScore  + followingScore;
+    }
+
+    private double distanceScore(Double postLat, Double postLon, Double userLat, Double userLon) {
+        double distance = calculateDistance(postLat, postLon, userLat, userLon);
+
+        // 여기에서 거리에 따른 점수를 계산합니다. 예를 들어:
+        if (distance <= 3) { // 1km 이내
+            return 5;
+        } else  { // 10km 초과
+            return 0;
+        }
+    }
+
+    private double calculateDistance(Double lat1, Double lon1, Double lat2, Double lon2) {
+        // 헤버사인 공식을 사용하여 거리를 계산
+        int R = 6371; // 지구 반지름 (km)
+        double latDistance = Math.toRadians(lat2 - lat1);
+        double lonDistance = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        double distance = R * c;
+
+        return distance;
+    }
+
+    //성별 점수
+    double genderScore(Post post, User user) {
+        return post.getUserInfo().getGender() == user.getUserInfo().getGender() ? 1 : 0;
+    }
+
+    //동시간대 점수
+    double timezoneScore(Post post, LocalDateTime localDateTime) {
+        int timezoneDifference = Math.abs(post.getCreateDate().getHour() - localDateTime.getHour());
+        return timezoneDifference <= 3 ? 5 : 0 ;
+    }
+
+
+    //키 점수
+    double heightScore(Post post, UserInfo userInfo) {
+        Double postHeight = post.getUserInfo().getHeight();
+        Double userHeight = userInfo.getHeight();
+        if(postHeight == null || userHeight == null){ return 0; }
+        double heightDifference = Math.abs(postHeight - userHeight);
+        return heightDifference <= 5 ? 1 : 0;
+    }
+
+    // 몸무게 점수
+    double weightScore (Post post, UserInfo userInfo) {
+        Double postWeight = post.getUserInfo().getWeight();
+        Double userWeight = userInfo.getWeight();
+        if(postWeight == null || userWeight == null){return 0;}
+        double weightDifference = Math.abs(postWeight - userWeight);
+        return weightDifference <= 5 ? 1: 0;
+    }
+
+    // 체질 점수
+    double constitutionScore(Post post, UserInfo userInfo) {
+        return post.getUserInfo().getConstitution() == userInfo.getConstitution() ? 3 : 0;
+    }
+
+    // 스타일 점수
+    double styleScore(Post post, UserInfo userInfo) {
+        return userInfo.getStyle().contains(post.getUserInfo().getStyle()) ? 2 : 0 ;
+    }
+
+    // 좋아요 점수
+    double likeScore(Post post) {
+        return post.getLikeCNT()*0.01 ;
+    }
+
+    double followingScore(Post post, User user) {
+        // 현재 사용자가 게시물 작성자를 팔로우하고 있는지 확인
+
+        boolean isFollowing = user.getFollowings().contains(post.getUser());
+        return isFollowing ? 2 : 0; // 팔로우하고 있다면 가산점 2점 부여
     }
 
     @Override

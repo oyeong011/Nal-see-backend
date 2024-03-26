@@ -1,9 +1,6 @@
 package everycoding.nalseebackend.post;
 
-import everycoding.nalseebackend.post.dto.PostForDetailResponseDto;
-import everycoding.nalseebackend.post.dto.PostForUserFeedResponseDto;
-import everycoding.nalseebackend.post.dto.PostRequestDto;
-import everycoding.nalseebackend.post.dto.PostResponseDto;
+import everycoding.nalseebackend.post.dto.*;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.io.IOException;
@@ -11,7 +8,7 @@ import java.util.List;
 
 public interface PostService {
 
-    List<PostResponseDto> getPosts(Long userId, Long lastPostId, Double nowLatitude, Double nowLongitude);
+    List<PostScoreDto> getPosts(Long userId, Long lastPostId, Double nowLatitude, Double nowLongitude);
 
     List<PostResponseDto> getPostsInLocation(Long userId, double bottomLeftLat, double bottomLeftLong,
                                              double topRightLat, double topRightLong);
