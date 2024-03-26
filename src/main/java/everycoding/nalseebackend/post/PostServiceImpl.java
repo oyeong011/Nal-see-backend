@@ -175,6 +175,7 @@ public class PostServiceImpl implements PostService{
         Post post = postRepository.findById(postId).orElseThrow(() -> new BaseException("wrong postId"));
         return new PostForDetailResponseDto(
                 PostResponseDto.createPostResponseDto(post, isLiked(userId, post.getId())),
+                post.getUserInfo(),
                 commentService.getComments(postId)
         );
     }
