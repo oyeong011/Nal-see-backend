@@ -2,10 +2,8 @@ package everycoding.nalseebackend.post;
 
 import everycoding.nalseebackend.api.ApiResponse;
 import everycoding.nalseebackend.auth.customUser.CustomUserDetails;
-import everycoding.nalseebackend.post.dto.PostForDetailResponseDto;
-import everycoding.nalseebackend.post.dto.PostForUserFeedResponseDto;
-import everycoding.nalseebackend.post.dto.PostResponseDto;
-import everycoding.nalseebackend.post.dto.PostRequestDto;
+import everycoding.nalseebackend.post.dto.*;
+import everycoding.nalseebackend.user.UserService;
 import everycoding.nalseebackend.user.dto.UserInfoResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -23,10 +21,11 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
+    private final UserService userService;
 
     // 기본 조회
     @GetMapping("/api/posts")
-    public ApiResponse<List<PostResponseDto>> getPosts(
+    public ApiResponse<List<PostScoreDto>> getPosts(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestParam Long lastPostId,
             @RequestParam Double nowLatitude,

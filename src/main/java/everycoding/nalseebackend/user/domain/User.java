@@ -74,6 +74,7 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user")
     private List<Comment> comments;
 
+
     public User(String username, String email) {
         this.username = username;
         this.email = email;

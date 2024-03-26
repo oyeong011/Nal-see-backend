@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -22,4 +24,6 @@ public interface PostRepository extends JpaRepository<Post, Long>, JpaSpecificat
             "WHERE p.latitude >= :bottomLeftLat AND p.latitude <= :topRightLat " +
             "AND p.longitude >= :bottomLeftLong AND p.longitude <= :topRightLong")
     List<Post> findByLocationWithin(Double bottomLeftLat, Double bottomLeftLong, Double topRightLat, Double topRightLong);
+
+    List<Post> findByCreateDateBetween(LocalDateTime startDateTime, LocalDateTime endDateTime);
 }
