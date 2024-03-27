@@ -1,17 +1,21 @@
 package everycoding.nalseebackend.webclient;
 
 import everycoding.nalseebackend.auth.jwt.JwtTokenProvider;
+import everycoding.nalseebackend.firebase.FcmService;
+import everycoding.nalseebackend.firebase.dto.FcmSendDto;
 import everycoding.nalseebackend.user.UserRepository;
+import everycoding.nalseebackend.user.UserService;
 import everycoding.nalseebackend.user.domain.User;
+import everycoding.nalseebackend.webclient.dto.MessageEventDto;
 import everycoding.nalseebackend.webclient.dto.UserInfo;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -21,6 +25,7 @@ public class UsersController {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
+    private final FcmService fcmService;
 
     @GetMapping("/user/info")
     public UserInfo getUser(HttpServletRequest request) {
@@ -46,5 +51,25 @@ public class UsersController {
                 .userId(user.getId())
                 .userImg(user.getPicture())
                 .build();
+    }
+
+    @PostMapping("/msg-alarm")
+    public void messageEvent(@RequestBody MessageEventDto messageEventDto) throws IOException {
+        log.info("fcm메시지왔어영");
+        Optional<User> byId = userRepository.findById(messageEventDto.getReceiverId());
+        User receiver = byId.orElseThrow();
+        List<String> fcmToken = receiver.getFcmToken();
+        log.info("messageEvent 진입, 메시지: {}", messageEventDto);
+        log.info(messageEventDto.getSenderName() + "님께서 메시지를 보냈습니다.");
+        // FCM 메시지 생성 및 전송
+        for (String tokens : fcmToken) {
+            FcmSendDto fcmSendDto = FcmSendDto.builder()
+                    .token(tokens)
+                    .title(messageEventDto.getSenderName() + "님께서 메시지를 보냈습니다.")
+                    .body(messageEventDto.getMessage())
+                    .build();
+
+            fcmService.sendMessageTo(fcmSendDto);
+        }
     }
 }
