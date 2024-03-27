@@ -68,10 +68,10 @@ public class User extends BaseEntity {
     @Embedded
     private UserInfo userInfo;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.ALL})
     private List<Post> posts;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.ALL})
     private List<Comment> comments;
 
 
