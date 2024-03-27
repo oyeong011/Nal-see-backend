@@ -46,6 +46,7 @@ public class CommentController {
 
         // fcmService.sendMessageTo(fcmSendDto);
 
+        commentService.writeComment(postId, requestDto);
         return ApiResponse.ok();
     }
 
