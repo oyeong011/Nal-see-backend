@@ -258,22 +258,18 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public void updatePost(Long userId, Long postId, PostRequestDto postRequestDto) {
+    public void updatePost(Long userId, Long postId, PostUpdateRequestDto updateRequestDto) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new BaseException("wrong postId"));
 
         if (!post.getUser().getId().equals(userId)) {
             throw new BaseException("수정할 수 있는 권한이 없습니다.");
         }
 
-        if (postRequestDto.getContent() != null) {
-            post.setContent(postRequestDto.getContent());
+        if (updateRequestDto.getContent() != null) {
+            post.setContent(updateRequestDto.getContent());
         }
-        if (postRequestDto.getAddress() != null) {
-            post.setAddress(postRequestDto.getAddress());
-        }
-        if (postRequestDto.getLatitude() != null) {
-            post.setLatitude(postRequestDto.getLatitude());
-            post.setLongitude(postRequestDto.getLongitude());
+        if (updateRequestDto.getUserInfo() != null) {
+            post.setUserInfo(updateRequestDto.getUserInfo());
         }
 
         postRepository.save(post);

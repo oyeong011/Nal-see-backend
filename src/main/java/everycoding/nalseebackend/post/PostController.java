@@ -91,7 +91,7 @@ public class PostController {
     public ApiResponse<Void> updatePost(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @PathVariable Long postId,
-            @RequestPart PostRequestDto requestDto
+            @RequestPart PostUpdateRequestDto requestDto
     ) {
         postService.updatePost(customUserDetails.getId(), postId, requestDto);
         return ApiResponse.ok();
