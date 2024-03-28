@@ -28,7 +28,7 @@ public class AuthController {
         User user = userService.findByEmail(email);
 
         // 필요한 정보만 UserResponse 객체에 담아 반환
-        return new UserResponse(user.getId(), user.getUsername(), user.getEmail(), user.isNewUser());
+        return new UserResponse(user.getId(), user.getUsername(), user.getEmail(), user.getPicture() ,user.isNewUser());
     }
 
     @PostMapping("/api/signup")
