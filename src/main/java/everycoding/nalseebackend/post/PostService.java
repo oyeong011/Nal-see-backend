@@ -22,7 +22,7 @@ public interface PostService {
 
     void post(PostRequestDto postRequestDto, HttpServletRequest request) throws IOException;
 
-    void updatePost(Long userId, Long postId, PostRequestDto postRequestDto);
+    void updatePost(Long userId, Long postId, PostUpdateRequestDto postRequestDto);
 
     void deletePost(Long userId, Long postId);
 
