@@ -7,7 +7,6 @@ import everycoding.nalseebackend.post.domain.Post;
 import everycoding.nalseebackend.post.dto.*;
 import everycoding.nalseebackend.user.UserRepository;
 import everycoding.nalseebackend.user.domain.*;
-import everycoding.nalseebackend.user.dto.UserInfoResponseDto;
 import everycoding.nalseebackend.weather.Weather;
 import everycoding.nalseebackend.weather.dto.WeatherResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
@@ -157,7 +156,7 @@ public class PostServiceImpl implements PostService{
 
     @Override
     @Transactional(readOnly = true)
-    public List<PostResponseDto> getPostsInLocation(
+    public List<PostForMapResponseDto> getPostsInLocation(
             Long userId,
             double bottomLeftLat, double bottomLeftLong,
             double topRightLat, double topRightLong
@@ -165,8 +164,11 @@ public class PostServiceImpl implements PostService{
         List<Post> posts = postRepository.findByLocationWithin(bottomLeftLat, bottomLeftLong, topRightLat, topRightLong);
 
         return posts.stream()
-                .map(post -> PostResponseDto.createPostResponseDto(post, isLiked(userId, post.getId())))
-                .collect(Collectors.toList());
+                .map(post -> new PostForMapResponseDto(
+                        PostResponseDto.createPostResponseDto(post, isLiked(userId, post.getId())),
+                        post.getLatitude(),
+                        post.getLongitude()
+                )).collect(Collectors.toList());
     }
 
     @Override

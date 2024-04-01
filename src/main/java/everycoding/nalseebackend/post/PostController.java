@@ -36,7 +36,7 @@ public class PostController {
 
     // 지도 기준 조회
     @GetMapping("/api/posts/location")
-    public ApiResponse<List<PostResponseDto>> getPostsInLocation(
+    public ApiResponse<List<PostForMapResponseDto>> getPostsInLocation(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestParam double bottomLeftLat, @RequestParam double bottomLeftLong,
             @RequestParam double topRightLat, @RequestParam double topRightLong) {
