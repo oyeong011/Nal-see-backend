@@ -5,7 +5,7 @@ import everycoding.nalseebackend.post.PostRepository;
 import everycoding.nalseebackend.post.domain.Post;
 import everycoding.nalseebackend.user.UserRepository;
 import everycoding.nalseebackend.user.domain.*;
-import everycoding.nalseebackend.weather.Weather;
+import everycoding.nalseebackend.weather.caller.Weather;
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Stream;
 
-import static everycoding.nalseebackend.weather.Weather.*;
+import static everycoding.nalseebackend.weather.caller.Weather.*;
 
 @Component
 @RequiredArgsConstructor
@@ -83,7 +83,7 @@ public class InitDb {
                     "오늘은 바람이 많이 불어요. 모자 꼭 쓰고 다니세요."
             };
 
-            Weather[] weathers = {Thunderstorm, Rain, Snow, Fog, Clear, Clouds};
+            String[] weathers = {"Thunderstorm", "Rain", "Snow", "Fog", "Clear", "Clouds"};
 
             String[] places = {
                     "서울시 강남구",

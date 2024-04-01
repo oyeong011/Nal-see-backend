@@ -1,7 +1,6 @@
 package everycoding.nalseebackend.post.dto;
 
 import everycoding.nalseebackend.post.domain.Post;
-import everycoding.nalseebackend.weather.Weather;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +20,7 @@ public class PostResponseDto {
 
     private String address;
 
-    private Weather weather;
+    private String weather;
     private Double temperature;
 
     private Long userId;
@@ -30,7 +29,7 @@ public class PostResponseDto {
 
     @Builder
     public PostResponseDto(Long id, List<String> pictureList, String content, Integer likeCnt, Boolean isLiked,
-                           LocalDateTime createDate, String address, Weather weather, Double temperature, Long userId,
+                           LocalDateTime createDate, String address, String weather, Double temperature, Long userId,
                            String username, String userImage) {
         this.id = id;
         this.pictureList = pictureList;
