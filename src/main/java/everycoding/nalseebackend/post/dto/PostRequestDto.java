@@ -3,6 +3,8 @@ package everycoding.nalseebackend.post.dto;
 import everycoding.nalseebackend.user.domain.UserDetail;
 import lombok.Getter;
 
+import java.util.List;
+
 @Getter
 public class PostRequestDto {
 
@@ -14,5 +16,9 @@ public class PostRequestDto {
     private Double latitude;
     private Double longitude;
 
-    private UserDetail userDetail;
+    private Double height;
+    private Double weight;
+    private String constitution;
+    private List<String> style;
+    private String gender;
 }

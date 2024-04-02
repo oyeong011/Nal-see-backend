@@ -218,12 +218,13 @@ public class PostServiceImpl implements PostService{
         List<String> photos = s3Service.uploadS3(files);
 
         CurrentWeatherInfo currentWeatherInfo = weatherApiCaller.getCurrentWeather(postRequestDto.getLatitude(), postRequestDto.getLongitude());
+
         UserDetail userDetail = UserDetail.builder()
-                .height(postRequestDto.getUserDetail().getHeight())
-                .weight(postRequestDto.getUserDetail().getWeight())
-                .constitution(postRequestDto.getUserDetail().getConstitution())
-                .style(postRequestDto.getUserDetail().getStyle())
-                .gender(postRequestDto.getUserDetail().getGender())
+                .height(postRequestDto.getHeight())
+                .weight(postRequestDto.getWeight())
+                .constitution(Constitution.valueOf(postRequestDto.getConstitution()))
+                .style(postRequestDto.getStyle().stream().map(FashionStyle::valueOf).collect(Collectors.toList()))
+                .gender(Gender.valueOf(postRequestDto.getGender()))
                 .build();
 
         postRepository.save(
