@@ -3,7 +3,7 @@ package everycoding.nalseebackend.user;
 import everycoding.nalseebackend.api.exception.BaseException;
 import everycoding.nalseebackend.post.PostRepository;
 import everycoding.nalseebackend.post.domain.Post;
-import everycoding.nalseebackend.user.domain.UserInfo;
+import everycoding.nalseebackend.user.domain.UserDetail;
 import everycoding.nalseebackend.user.dto.UserFeedResponseDto;
 import everycoding.nalseebackend.user.dto.UserInfoRequestDto;
 import everycoding.nalseebackend.user.dto.UserInfoResponseDto;
@@ -13,9 +13,6 @@ import everycoding.nalseebackend.auth.dto.request.SignupRequestDto;
 import everycoding.nalseebackend.auth.exception.EmailAlreadyUsedException;
 import everycoding.nalseebackend.user.domain.User;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -57,18 +53,18 @@ public class UserService {
     public UserInfoResponseDto getUserInfo(long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new BaseException("wrong userId"));
         return UserInfoResponseDto.builder()
-                .height(user.getUserInfo().getHeight())
-                .weight(user.getUserInfo().getWeight())
-                .constitution(user.getUserInfo().getConstitution())
-                .style(user.getUserInfo().getStyle())
-                .gender(user.getUserInfo().getGender())
+                .height(user.getUserDetail().getHeight())
+                .weight(user.getUserDetail().getWeight())
+                .constitution(user.getUserDetail().getConstitution())
+                .style(user.getUserDetail().getStyle())
+                .gender(user.getUserDetail().getGender())
                 .build();
     }
 
     public void setUserInfo(long userId, UserInfoRequestDto requestDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new BaseException("wrong userId"));
-        user.setUserInfo(
-                UserInfo.builder()
+        user.setUserDetail(
+                UserDetail.builder()
                 .height(requestDto.getHeight())
                 .weight(requestDto.getWeight())
                 .constitution(requestDto.getConstitution())

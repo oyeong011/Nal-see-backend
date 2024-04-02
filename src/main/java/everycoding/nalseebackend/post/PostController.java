@@ -34,15 +34,6 @@ public class PostController {
         return ApiResponse.ok(postService.getPosts(customUserDetails.getId(), lastPostId, nowLatitude, nowLongitude));
     }
 
-    // 지도 기준 조회
-    @GetMapping("/api/posts/location")
-    public ApiResponse<List<PostForMapResponseDto>> getPostsInLocation(
-            @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @RequestParam double bottomLeftLat, @RequestParam double bottomLeftLong,
-            @RequestParam double topRightLat, @RequestParam double topRightLong) {
-        return ApiResponse.ok(postService.getPostsInLocation(customUserDetails.getId(), bottomLeftLat, bottomLeftLong, topRightLat, topRightLong));
-    }
-
     // 상세 페이지 조회
     @GetMapping("/api/posts/{postId}")
     public ApiResponse<PostForDetailResponseDto> getPost(

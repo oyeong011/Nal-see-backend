@@ -44,12 +44,12 @@ public class PostServiceImpl implements PostService{
     public List<PostScoreDto> getPosts(Long userId, Long lastPostId, Double nowLatitude, Double nowLongitude ) {
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-        UserInfo userInfo = user.getUserInfo();
+        UserDetail userDetail = user.getUserDetail();
         LocalDateTime localDateTime = LocalDateTime.now();
         List<PostScoreDto> postScoreDto = postRepository.findByIdLessThan(lastPostId != -1 ? lastPostId : Long.MAX_VALUE,pageable)
                 .stream()
                 .map(post -> {
-                    double score = totalScore(post, user, userInfo, localDateTime, nowLatitude, nowLongitude);
+                    double score = totalScore(post, user, userDetail, localDateTime, nowLatitude, nowLongitude);
                     PostResponseDto postResponseDto = PostResponseDto.createPostResponseDto(post, isLiked(userId, post.getId()));
                     return new PostScoreDto(postResponseDto, score);
                 }).collect(Collectors.toList());
@@ -63,13 +63,13 @@ public class PostServiceImpl implements PostService{
 
     }
     //가산점 점수
-    private double totalScore(Post post, User user, UserInfo userInfo, LocalDateTime localDateTime, Double nowLatitude, Double nowLongitude) {
+    private double totalScore(Post post, User user, UserDetail userDetail, LocalDateTime localDateTime, Double nowLatitude, Double nowLongitude) {
         double genderScore = genderScore(post, user);
         double timezoneScore = timezoneScore(post, localDateTime);
-        double heightScore = heightScore(post, userInfo);
-        double weightScore = weightScore(post, userInfo);
-        double constitutionScore = constitutionScore(post, userInfo);
-        double styleScore = styleScore(post, userInfo);
+        double heightScore = heightScore(post, userDetail);
+        double weightScore = weightScore(post, userDetail);
+        double constitutionScore = constitutionScore(post, userDetail);
+        double styleScore = styleScore(post, userDetail);
         double likeScore = likeScore(post);
         double followingScore = followingScore(post, user);
         double distanceScore = distanceScore(post.getLatitude(), post.getLongitude(), nowLatitude, nowLongitude);
@@ -103,7 +103,7 @@ public class PostServiceImpl implements PostService{
 
     //성별 점수
     double genderScore(Post post, User user) {
-        return post.getUserInfo().getGender() == user.getUserInfo().getGender() ? 1 : 0;
+        return post.getUserDetail().getGender() == user.getUserDetail().getGender() ? 1 : 0;
     }
 
     //동시간대 점수
@@ -114,31 +114,31 @@ public class PostServiceImpl implements PostService{
 
 
     //키 점수
-    double heightScore(Post post, UserInfo userInfo) {
-        Double postHeight = post.getUserInfo().getHeight();
-        Double userHeight = userInfo.getHeight();
+    double heightScore(Post post, UserDetail userDetail) {
+        Double postHeight = post.getUserDetail().getHeight();
+        Double userHeight = userDetail.getHeight();
         if(postHeight == null || userHeight == null){ return 0; }
         double heightDifference = Math.abs(postHeight - userHeight);
         return heightDifference <= 5 ? 1 : 0;
     }
 
     // 몸무게 점수
-    double weightScore (Post post, UserInfo userInfo) {
-        Double postWeight = post.getUserInfo().getWeight();
-        Double userWeight = userInfo.getWeight();
+    double weightScore (Post post, UserDetail userDetail) {
+        Double postWeight = post.getUserDetail().getWeight();
+        Double userWeight = userDetail.getWeight();
         if(postWeight == null || userWeight == null){return 0;}
         double weightDifference = Math.abs(postWeight - userWeight);
         return weightDifference <= 5 ? 1: 0;
     }
 
     // 체질 점수
-    double constitutionScore(Post post, UserInfo userInfo) {
-        return post.getUserInfo().getConstitution() == userInfo.getConstitution() ? 3 : 0;
+    double constitutionScore(Post post, UserDetail userDetail) {
+        return post.getUserDetail().getConstitution() == userDetail.getConstitution() ? 3 : 0;
     }
 
     // 스타일 점수
-    double styleScore(Post post, UserInfo userInfo) {
-        return userInfo.getStyle().contains(post.getUserInfo().getStyle()) ? 2 : 0 ;
+    double styleScore(Post post, UserDetail userDetail) {
+        return userDetail.getStyle().contains(post.getUserDetail().getStyle()) ? 2 : 0 ;
     }
 
     // 좋아요 점수
@@ -155,28 +155,11 @@ public class PostServiceImpl implements PostService{
 
     @Override
     @Transactional(readOnly = true)
-    public List<PostForMapResponseDto> getPostsInLocation(
-            Long userId,
-            double bottomLeftLat, double bottomLeftLong,
-            double topRightLat, double topRightLong
-    ) {
-        List<Post> posts = postRepository.findByLocationWithin(bottomLeftLat, bottomLeftLong, topRightLat, topRightLong);
-
-        return posts.stream()
-                .map(post -> new PostForMapResponseDto(
-                        PostResponseDto.createPostResponseDto(post, isLiked(userId, post.getId())),
-                        post.getLatitude(),
-                        post.getLongitude()
-                )).collect(Collectors.toList());
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public PostForDetailResponseDto getPost(Long userId, Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new BaseException("wrong postId"));
         return new PostForDetailResponseDto(
                 PostResponseDto.createPostResponseDto(post, isLiked(userId, post.getId())),
-                post.getUserInfo(),
+                post.getUserDetail(),
                 commentService.getComments(postId)
         );
     }
@@ -235,12 +218,12 @@ public class PostServiceImpl implements PostService{
         List<String> photos = s3Service.uploadS3(files);
 
         CurrentWeatherInfo currentWeatherInfo = weatherApiCaller.getCurrentWeather(postRequestDto.getLatitude(), postRequestDto.getLongitude());
-        UserInfo userInfo = UserInfo.builder()
-                .height(postRequestDto.getUserInfo().getHeight())
-                .weight(postRequestDto.getUserInfo().getWeight())
-                .constitution(postRequestDto.getUserInfo().getConstitution())
-                .style(postRequestDto.getUserInfo().getStyle())
-                .gender(postRequestDto.getUserInfo().getGender())
+        UserDetail userDetail = UserDetail.builder()
+                .height(postRequestDto.getUserDetail().getHeight())
+                .weight(postRequestDto.getUserDetail().getWeight())
+                .constitution(postRequestDto.getUserDetail().getConstitution())
+                .style(postRequestDto.getUserDetail().getStyle())
+                .gender(postRequestDto.getUserDetail().getGender())
                 .build();
 
         postRepository.save(
@@ -253,7 +236,7 @@ public class PostServiceImpl implements PostService{
                         .address(postRequestDto.getAddress())
                         .latitude(postRequestDto.getLatitude())
                         .longitude(postRequestDto.getLongitude())
-                        .userInfo(userInfo)
+                        .userDetail(userDetail)
                         .build()
         );
     }
@@ -269,8 +252,8 @@ public class PostServiceImpl implements PostService{
         if (updateRequestDto.getContent() != null) {
             post.setContent(updateRequestDto.getContent());
         }
-        if (updateRequestDto.getUserInfo() != null) {
-            post.setUserInfo(updateRequestDto.getUserInfo());
+        if (updateRequestDto.getUserDetail() != null) {
+            post.setUserDetail(updateRequestDto.getUserDetail());
         }
 
         postRepository.save(post);

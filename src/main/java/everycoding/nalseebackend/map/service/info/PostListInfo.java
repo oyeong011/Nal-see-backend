@@ -1,19 +1,18 @@
-package everycoding.nalseebackend.post.dto;
+package everycoding.nalseebackend.map.service.info;
 
 import everycoding.nalseebackend.post.domain.Post;
+import everycoding.nalseebackend.post.dto.PostResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Getter
-@NoArgsConstructor
+@Data
 @Builder
 @AllArgsConstructor
-public class PostResponseDto {
+public class PostListInfo {
     private Long id;
     private List<String> pictureList;
     private String content;
@@ -30,8 +29,8 @@ public class PostResponseDto {
     private String username;
     private String userImage;
 
-    static public PostResponseDto createPostResponseDto(Post post, Boolean isLiked) {
-        return PostResponseDto.builder()
+    static public PostListInfo createPostListInfo(Post post, Boolean isLiked) {
+        return PostListInfo.builder()
                 .id(post.getId())
                 .pictureList(post.getPictureList())
                 .content(post.getContent())

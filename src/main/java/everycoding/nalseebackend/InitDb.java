@@ -5,7 +5,6 @@ import everycoding.nalseebackend.post.PostRepository;
 import everycoding.nalseebackend.post.domain.Post;
 import everycoding.nalseebackend.user.UserRepository;
 import everycoding.nalseebackend.user.domain.*;
-import everycoding.nalseebackend.weather.caller.Weather;
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Stream;
-
-import static everycoding.nalseebackend.weather.caller.Weather.*;
 
 @Component
 @RequiredArgsConstructor
@@ -112,7 +109,7 @@ public class InitDb {
                         .address(places[rd.nextInt(places.length)])
                         .longitude(rd.nextInt(9000)/100.0)
                         .latitude(rd.nextInt(9000)/100.0)
-                        .userInfo(UserInfo.builder()
+                        .userDetail(UserDetail.builder()
                                 .height(160 + rd.nextInt(300)/10.0)
                                 .weight(50 + rd.nextInt(500)/10.0)
                                 .constitution(constitutions[rd.nextInt(constitutions.length)])

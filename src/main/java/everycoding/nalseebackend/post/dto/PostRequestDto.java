@@ -1,9 +1,6 @@
 package everycoding.nalseebackend.post.dto;
 
-import everycoding.nalseebackend.user.domain.Constitution;
-import everycoding.nalseebackend.user.domain.FashionStyle;
-import everycoding.nalseebackend.user.domain.Gender;
-import everycoding.nalseebackend.user.domain.UserInfo;
+import everycoding.nalseebackend.user.domain.UserDetail;
 import lombok.Getter;
 
 @Getter
@@ -17,5 +14,5 @@ public class PostRequestDto {
     private Double latitude;
     private Double longitude;
 
-    private UserInfo userInfo;
+    private UserDetail userDetail;
 }
