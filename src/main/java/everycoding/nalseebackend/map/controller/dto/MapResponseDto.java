@@ -12,4 +12,5 @@ public class MapResponseDto {
     private Double topRightLong;
 
     private String picture;
+    private Integer count;
 }

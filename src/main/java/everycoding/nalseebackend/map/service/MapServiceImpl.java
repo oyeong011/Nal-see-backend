@@ -35,26 +35,38 @@ public class MapServiceImpl implements MapService {
 
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 4; j++) {
-                for (Post post : posts) {
+                int count = 0;
+                String picture = null;
+
+                for (int k = 0; k < posts.size(); k++) {
+                    Post post = posts.get(k);
                     double lat = post.getLatitude();
                     double lon = post.getLongitude();
 
                     if (
                             lat >= bottomLeftLat + h * i && lat <= bottomLeftLat + h * (i + 1) &&
-                            lon >= bottomLeftLong + w * j && lon <= bottomLeftLong + w * (j + 1)
+                                    lon >= bottomLeftLong + w * j && lon <= bottomLeftLong + w * (j + 1)
                     ) {
-                        postsInMapInfos.add(
-                                PostsInMapInfo.builder()
-                                        .bottomLeftLat(bottomLeftLat + h * i)
-                                        .bottomLeftLong(bottomLeftLong + w * j)
-                                        .topRightLat(bottomLeftLat + h * (i + 1))
-                                        .topRightLong(bottomLeftLong + w * (j + 1))
-                                        .picture(post.getPictureList().get(0))
-                                        .build()
-                        );
-                        break;
+                        count++;
+                        picture = post.getPictureList().get(0);
+
+                        posts.remove(post);
+                        k--;
                     }
                 }
+                if (count != 0) {
+                    postsInMapInfos.add(
+                            PostsInMapInfo.builder()
+                                    .bottomLeftLat(bottomLeftLat + h * i)
+                                    .bottomLeftLong(bottomLeftLong + w * j)
+                                    .topRightLat(bottomLeftLat + h * (i + 1))
+                                    .topRightLong(bottomLeftLong + w * (j + 1))
+                                    .picture(picture)
+                                    .count(count)
+                                    .build()
+                    );
+                }
+
             }
         }
 

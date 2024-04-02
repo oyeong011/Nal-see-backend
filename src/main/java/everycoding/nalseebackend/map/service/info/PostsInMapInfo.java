@@ -15,4 +15,5 @@ public class PostsInMapInfo {
     private Double topRightLong;
 
     private String picture;
+    private Integer count;
 }
