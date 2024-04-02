@@ -9,6 +9,7 @@ import everycoding.nalseebackend.weather.controller.dto.CurrentWeatherResponseDt
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -19,10 +20,11 @@ public class WeatherController {
 
     @GetMapping("/api/weather/current")
     public ApiResponse<CurrentWeatherResponseDto> getCurrentWeather(
-            @RequestBody CurrentWeatherRequestDto requestDto
+            @RequestParam Double latitude,
+            @RequestParam Double longitude
     ) {
-        CurrentWeatherInfo currentWeatherInfo = weatherApiCaller.getCurrentWeather(requestDto.getLatitude(), requestDto.getLongitude());
-        AirPollutionInfo airPollutionInfo = weatherApiCaller.getApiPollution(requestDto.getLatitude(), requestDto.getLongitude());
+        CurrentWeatherInfo currentWeatherInfo = weatherApiCaller.getCurrentWeather(latitude, longitude);
+        AirPollutionInfo airPollutionInfo = weatherApiCaller.getApiPollution(latitude, longitude);
 
         return ApiResponse.ok(
                 CurrentWeatherResponseDto.builder()
