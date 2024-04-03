@@ -117,6 +117,10 @@ public class UserService {
         Post post = byId.orElseThrow();
         User user = post.getUser();
         List<String> fcmToken = user.getFcmToken();
-        return fcmToken.stream().findFirst().toString();
+        String string = fcmToken.stream().findFirst().toString();
+        if (fcmToken.isEmpty()) {
+            return "error";
+        }
+        return string;
     }
 }
