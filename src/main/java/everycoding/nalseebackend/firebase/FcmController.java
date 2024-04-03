@@ -44,7 +44,7 @@ public class FcmController {
 
     @PostMapping("/fcmtoken")
     public void saveToken(HttpServletRequest request) {
-        String fcmToken = request.getHeader("fcmToken");
+        String fcmToken = request.getHeader("Fcmtoken");
         String token = "";
         Cookie[] cookies = request.getCookies();
         for (Cookie cookie : cookies) {
@@ -57,9 +57,7 @@ public class FcmController {
         String userEmail = claims.getSubject();
         Optional<User> byEmail = userRepository.findByEmail(userEmail);
         User user = byEmail.orElseThrow();
-
-        List<String> fcmToken1 = user.getFcmToken();
-        fcmToken1.add(fcmToken);
+        user.setFcmToken(fcmToken);
 
         userRepository.save(user);
     }

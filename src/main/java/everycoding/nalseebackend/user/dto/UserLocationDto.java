@@ -1,10 +1,9 @@
 package everycoding.nalseebackend.user.dto;
 
-import everycoding.nalseebackend.BaseEntity;
 import lombok.Data;
 
 @Data
-public class UserLocationDto extends BaseEntity {
+public class UserLocationDto{
     private double latitude;
     private double longitude;
 
