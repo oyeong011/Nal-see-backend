@@ -44,7 +44,7 @@ public class FcmController {
 
     @PostMapping("/fcmtoken")
     public void saveToken(HttpServletRequest request) {
-        String fcmToken = request.getHeader("fcmToken");
+        String fcmToken = request.getHeader("Fcmtoken");
         String token = "";
         Cookie[] cookies = request.getCookies();
         for (Cookie cookie : cookies) {
