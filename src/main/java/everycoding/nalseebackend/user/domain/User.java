@@ -50,8 +50,8 @@ public class User extends BaseEntity {
     @ElementCollection
     private List<Long> commentLikeList = new ArrayList<>();
 
-    @ElementCollection
-    private List<String> fcmToken = new ArrayList<>();
+    @Setter
+    private String fcmToken;
 
     @ManyToMany
     @JoinTable(
