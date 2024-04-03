@@ -48,7 +48,7 @@ public class FcmServiceImpl implements FcmService {
      * @return Bearer token
      */
     private String getAccessToken() throws IOException {
-        String firebaseConfigPath = "firebase/nal-see-firebase-adminsdk-zbgfm-699897e249.json";
+        String firebaseConfigPath = "src/main/resources/firebase/nal-see-firebase-adminsdk-zbgfm-699897e249.json";
 
         GoogleCredentials googleCredentials = GoogleCredentials
                 .fromStream(new ClassPathResource(firebaseConfigPath).getInputStream())
