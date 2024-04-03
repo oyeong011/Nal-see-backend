@@ -37,14 +37,14 @@ public class CommentController {
     ) throws IOException {
         String userToken = userService.findUserTokenByPostId(postId);
 
-        // FCM 메시지 생성 및 전송
-        // FcmSendDto fcmSendDto = FcmSendDto.builder()
-        //         .token(userToken)
-        //         .title("새로운 댓글 알림")
-        //         .body("당신의 게시글에 새로운 댓글이 달렸습니다.")
-        //         .build();
+//         FCM 메시지 생성 및 전송
+         FcmSendDto fcmSendDto = FcmSendDto.builder()
+                 .token(userToken)
+                 .title("새로운 댓글 알림")
+                 .body("당신의 게시글에 새로운 댓글이 달렸습니다.")
+                 .build();
 
-        // fcmService.sendMessageTo(fcmSendDto);
+         fcmService.sendMessageTo(fcmSendDto);
 
         commentService.writeComment(postId, requestDto);
         return ApiResponse.ok();
