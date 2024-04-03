@@ -109,7 +109,7 @@ public class InitDb {
                         .address(places[rd.nextInt(places.length)])
                         .longitude(rd.nextInt(9000)/100.0)
                         .latitude(rd.nextInt(9000)/100.0)
-                        .userDetail(UserDetail.builder()
+                        .userInfo(UserInfo.builder()
                                 .height(160 + rd.nextInt(300)/10.0)
                                 .weight(50 + rd.nextInt(500)/10.0)
                                 .constitution(constitutions[rd.nextInt(constitutions.length)])

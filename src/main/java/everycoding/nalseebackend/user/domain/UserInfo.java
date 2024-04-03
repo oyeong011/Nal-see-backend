@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 @Embeddable
 @NoArgsConstructor
-public class UserDetail {
+public class UserInfo {
 
     private Double height;
     private Double weight;
@@ -23,7 +23,7 @@ public class UserDetail {
     private Gender gender;
 
     @Builder
-    public UserDetail(Double height, Double weight, Constitution constitution, List<FashionStyle> style, Gender gender) {
+    public UserInfo(Double height, Double weight, Constitution constitution, List<FashionStyle> style, Gender gender) {
         this.height = height;
         this.weight = weight;
         this.constitution = constitution;
