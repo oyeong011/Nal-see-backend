@@ -58,18 +58,17 @@ public class UsersController {
         log.info("fcm메시지왔어영");
         Optional<User> byId = userRepository.findById(messageEventDto.getReceiverId());
         User receiver = byId.orElseThrow();
-        List<String> fcmToken = receiver.getFcmToken();
+        String fcmToken = receiver.getFcmToken();
         log.info("messageEvent 진입, 메시지: {}", messageEventDto);
         log.info(messageEventDto.getSenderName() + "님께서 메시지를 보냈습니다.");
         // FCM 메시지 생성 및 전송
-        for (String tokens : fcmToken) {
-            FcmSendDto fcmSendDto = FcmSendDto.builder()
-                    .token(tokens)
+        FcmSendDto fcmSendDto = FcmSendDto.builder()
+                    .token(fcmToken)
                     .title(messageEventDto.getSenderName() + "님께서 메시지를 보냈습니다.")
                     .body(messageEventDto.getMessage())
                     .build();
 
-            fcmService.sendMessageTo(fcmSendDto);
-        }
+        fcmService.sendMessageTo(fcmSendDto);
+
     }
 }
