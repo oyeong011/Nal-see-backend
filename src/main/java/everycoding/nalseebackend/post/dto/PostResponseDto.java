@@ -18,7 +18,7 @@ public class PostResponseDto {
     private List<String> pictureList;
     private String content;
     private Integer likeCnt;
-    private Boolean isLiked;
+    private Boolean liked;
     private LocalDateTime createDate;
 
     private String address;
@@ -30,13 +30,13 @@ public class PostResponseDto {
     private String username;
     private String userImage;
 
-    static public PostResponseDto createPostResponseDto(Post post, Boolean isLiked) {
+    static public PostResponseDto createPostResponseDto(Post post, Boolean liked) {
         return PostResponseDto.builder()
                 .id(post.getId())
                 .pictureList(post.getPictureList())
                 .content(post.getContent())
                 .likeCnt(post.getLikeCNT())
-                .isLiked(isLiked)
+                .liked(liked)
                 .createDate(post.getCreateDate())
                 .address(post.getAddress())
                 .weather(post.getWeather())

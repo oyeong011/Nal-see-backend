@@ -3,7 +3,7 @@ package everycoding.nalseebackend.user;
 import everycoding.nalseebackend.api.exception.BaseException;
 import everycoding.nalseebackend.post.PostRepository;
 import everycoding.nalseebackend.post.domain.Post;
-import everycoding.nalseebackend.user.domain.UserDetail;
+import everycoding.nalseebackend.user.domain.UserInfo;
 import everycoding.nalseebackend.user.dto.UserFeedResponseDto;
 import everycoding.nalseebackend.user.dto.UserInfoRequestDto;
 import everycoding.nalseebackend.user.dto.UserInfoResponseDto;
@@ -53,18 +53,18 @@ public class UserService {
     public UserInfoResponseDto getUserInfo(long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new BaseException("wrong userId"));
         return UserInfoResponseDto.builder()
-                .height(user.getUserDetail().getHeight())
-                .weight(user.getUserDetail().getWeight())
-                .constitution(user.getUserDetail().getConstitution())
-                .style(user.getUserDetail().getStyle())
-                .gender(user.getUserDetail().getGender())
+                .height(user.getUserInfo().getHeight())
+                .weight(user.getUserInfo().getWeight())
+                .constitution(user.getUserInfo().getConstitution())
+                .style(user.getUserInfo().getStyle())
+                .gender(user.getUserInfo().getGender())
                 .build();
     }
 
     public void setUserInfo(long userId, UserInfoRequestDto requestDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new BaseException("wrong userId"));
-        user.setUserDetail(
-                UserDetail.builder()
+        user.setUserInfo(
+                UserInfo.builder()
                 .height(requestDto.getHeight())
                 .weight(requestDto.getWeight())
                 .constitution(requestDto.getConstitution())

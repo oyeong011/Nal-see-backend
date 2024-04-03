@@ -50,13 +50,13 @@ public class Post extends BaseEntity {
 
     @Setter
     @Embedded
-    private UserDetail userDetail;
+    private UserInfo userInfo;
 //    private String link;
 //    private String brand;
 //    private String productName;
 
     @Builder
-    public Post(List<String> pictureList, String content, User user, String weather, double temperature, String address, double longitude, double latitude, UserDetail userDetail) {
+    public Post(List<String> pictureList, String content, User user, String weather, double temperature, String address, double longitude, double latitude, UserInfo userInfo) {
         this.pictureList = pictureList;
         this.content = content;
         likeCNT = 0;
@@ -67,7 +67,7 @@ public class Post extends BaseEntity {
         this.address = address;
         this.longitude = longitude;
         this.latitude = latitude;
-        this.userDetail = userDetail;
+        this.userInfo = userInfo;
     }
 
     public void increaseLikeCNT() {
