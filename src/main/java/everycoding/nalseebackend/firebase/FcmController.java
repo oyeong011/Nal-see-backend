@@ -63,5 +63,4 @@ public class FcmController {
 
         userRepository.save(user);
     }
-
 }
